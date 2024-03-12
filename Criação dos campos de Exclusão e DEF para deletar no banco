@@ -1,0 +1,370 @@
+# ############################################## DELETES ################################################################
+
+def delete_cliente():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR CLIENTE')
+    janelaupdate.geometry('380x180')
+
+    label_idcliente = tk.Label(janelaupdate, text='ID CLIENTE:', bg='green')
+    label_idcliente.grid(row=0, column=0, padx=10, pady=10)
+    entry_idcliente = ttk.Entry(janelaupdate)
+    entry_idcliente.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Cliente', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_clientes(entry_idcliente.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_clientes(idcliente):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idcliente:  # Verifica se o CPF não está vazio
+            cursor.execute('''DELETE FROM CLIENTE WHERE IDCLIENTE = ?''', idcliente)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID VENDEDOR', 'O ID CLIENTE não encontrado, verifique e tente novamente!')
+        else:
+            messagebox.showinfo('ID CLIENTE', 'O PARAMETRO ID VENDEDOR não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_funcionario():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR FUNCIONÁRIO')
+    janelaupdate.geometry('380x180')
+
+    label_idfuncionario = tk.Label(janelaupdate, text='ID FUNCIONÁRIO:', bg='green')
+    label_idfuncionario.grid(row=0, column=0, padx=10, pady=10)
+    entry_idfuncionario = ttk.Entry(janelaupdate)
+    entry_idfuncionario.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Funcionário', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_funcionarios(entry_idfuncionario.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_funcionarios(idfuncionario):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idfuncionario:  # Verifica se o CPF não está vazio
+            cursor.execute('''DELETE FROM FUNCIONARIO WHERE IDFUNCIONARIO = ?''', idfuncionario)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID VENDEDOR', 'O ID CLIENTE não encontrado, verifique e tente novamente!')
+        else:
+            messagebox.showinfo('ID FUNCIONARIO', 'O PARAMETRO ID FUNCIONARIO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_cargo():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR CARGOS')
+    janelaupdate.geometry('380x180')
+
+    label_idcargo = tk.Label(janelaupdate, text='ID CARGO :', bg='green')
+    label_idcargo.grid(row=0, column=0, padx=10, pady=10)
+    entry_idcargo = ttk.Entry(janelaupdate)
+    entry_idcargo.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Cargo', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_cargos(entry_idcargo.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_cargos(idcargo):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idcargo:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM CARGO WHERE IDCARGO = ?''', idcargo)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID CARGO', 'O ID CARGO não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID CARGO', 'O PARAMETRO ID CARGO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_meta():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR METAS')
+    janelaupdate.geometry('380x180')
+
+    label_idemta = tk.Label(janelaupdate, text='ID META :', bg='green')
+    label_idemta.grid(row=0, column=0, padx=10, pady=10)
+    entry_idmeta = ttk.Entry(janelaupdate)
+    entry_idmeta.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Meta', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_metas(entry_idmeta.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_metas(idmeta):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idmeta:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM META_VENDEDOR WHERE IDMETA = ?''', idmeta)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID META', 'O ID META não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID META', 'O PARAMETRO ID META não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_produto():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR PRODUTO')
+    janelaupdate.geometry('380x180')
+
+    label_idproduto = tk.Label(janelaupdate, text='ID PRODUTO :', bg='green')
+    label_idproduto.grid(row=0, column=0, padx=10, pady=10)
+    entry_idproduto = ttk.Entry(janelaupdate)
+    entry_idproduto.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Produto', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_produtos(entry_idproduto.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_produtos(idproduto):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idproduto:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM PRODUTO WHERE IDPRODUTO = ?''', idproduto)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID PRODUTO', 'O ID PRODUTO não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID PRODUTO', 'O PARAMETRO ID PRODUTO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_fabricacao():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR FABRICAÇÃO')
+    janelaupdate.geometry('380x180')
+
+    label_idfabricacao = tk.Label(janelaupdate, text='ID FABRICAÇÃO :', bg='green')
+    label_idfabricacao.grid(row=0, column=0, padx=10, pady=10)
+    entry_idfabricacao = ttk.Entry(janelaupdate)
+    entry_idfabricacao.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Fabricação', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_fabricacoes(entry_idfabricacao.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_fabricacoes(idfabricacao):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idfabricacao:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM PRODUTO_EM_FABRICAÇAO WHERE IDFABRICAÇAO = ?''', idfabricacao)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID FABRICAÇÃO', 'O ID FABRICAÇÃO não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID FABRICAÇÃO', 'O PARAMETRO ID FABRICAÇÃO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_fornecedor():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR FORNECEDOR')
+    janelaupdate.geometry('380x180')
+
+    label_idfornecedor = tk.Label(janelaupdate, text='ID FORNECEDOR :', bg='green')
+    label_idfornecedor.grid(row=0, column=0, padx=10, pady=10)
+    entry_idfornecedor= ttk.Entry(janelaupdate)
+    entry_idfornecedor.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Fornecedor', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_fornecedores(entry_idfornecedor.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_fornecedores(idfornecedor):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idfornecedor:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM FORNECEDOR WHERE IDFORNECEDOR = ?''', idfornecedor)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID FORNECEDOR', 'O ID FORNECEDOR não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID FORNECEDOR', 'O PARAMETRO ID FORNECEDOR não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_nota():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR NOTA FISCAL')
+    janelaupdate.geometry('380x180')
+
+    label_idnota = tk.Label(janelaupdate, text='ID NOTA :', bg='green')
+    label_idnota.grid(row=0, column=0, padx=10, pady=10)
+    entry_idnota= ttk.Entry(janelaupdate)
+    entry_idnota.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Nota Fiscal', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_notas(entry_idnota.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_notas(idnota):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idnota:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM NF_CLIENTE WHERE IDNF = ?''', idnota)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID NOTA FISCAL', 'O ID NOTA FISCAL não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID NOTA FISCAL', 'O PARAMETRO ID NOTA FISCAL não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_saida():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR SAIDA')
+    janelaupdate.geometry('380x180')
+
+    label_idmaterial = tk.Label(janelaupdate, text='ID MATERIAL :', bg='green')
+    label_idmaterial.grid(row=0, column=0, padx=10, pady=10)
+    entry_idmaterial = ttk.Entry(janelaupdate)
+    entry_idmaterial.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Material', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_saidas(entry_idmaterial.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_saidas(idmaterial):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idmaterial:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM MATERIAL_PRA_CONSUMO WHERE IDMATERIAL = ?''', idmaterial)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID MATERIAL', 'O ID MATERIAL não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID MATERIAL', 'O PARAMETRO ID MATERIAL não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def delete_produto_fabricacao():
+    janelaupdate = tk.Tk()
+    janelaupdate.title('EXCLUIR PRODUÇÃO')
+    janelaupdate.geometry('380x180')
+
+    label_idproducao = tk.Label(janelaupdate, text='ID FABRICAÇÃO :', bg='green')
+    label_idproducao.grid(row=0, column=0, padx=10, pady=10)
+    entry_idproducao = ttk.Entry(janelaupdate)
+    entry_idproducao.grid(row=0, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=0, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Excluir Produção', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: delete_produto_fabricacoes(entry_idproducao.get()))
+    botao_saida_material.grid(row=1, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def delete_produto_fabricacoes(idproducao):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idproducao:  # Verifica se o ID CARGO não está vazio, SE NAO ESTIVER, VAI PRO CURSOR
+            cursor.execute('''DELETE FROM PRODUTO_EM_FABRICAÇAO WHERE IDFABRICAÇAO = ?''', idproducao)
+            resultado = cursor.fetchone()
+            if not resultado: # SE NAO DELETOU NADA, PQ NAO ACHOU O ID CARGO ELE VAI DAR A MENSAGEM ABAIXO
+                return messagebox.showwarning('ID FABRICAÇÃO', 'O ID FABRICAÇÃO não encontrado, verifique e tente novamente!')
+        else: # SE O ID CARGO ESTIVER VAZIO
+            messagebox.showinfo('ID FABRICAÇÃO', 'O PARAMETRO ID FABRICAÇÃO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível deletar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
