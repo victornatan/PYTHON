@@ -1,0 +1,316 @@
+# #################################################### ABAS #############################################################
+
+# ABA CLIENTE
+# criando a primeira aba CLIENTE
+aba_cliente = ttk.Frame(notebook, takefocus=False)
+aba_cliente.grid(row=0, column=0)
+
+# nomeando a aba CLIENTE
+notebook.add(aba_cliente, text='Cadastrar Cliente')
+
+# criando os campos pra CLIENTE
+label_nome = tk.Label(aba_cliente, text='Nome: ')
+label_nome.grid(row=0, column=0, padx=10, pady=10)
+entry_nome = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_nome.grid(row=0, column=1, padx=10, pady=10)
+
+label_data_de_nascimento = tk.Label(aba_cliente, text='Data de Nascimento: ')
+label_data_de_nascimento.grid(row=1, column=0, padx=10, pady=10)
+entry_data_de_nascimento = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_data_de_nascimento.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+label_cpf = tk.Label(aba_cliente, text='Cpf:')
+label_cpf.grid(row=2, column=0, padx=10, pady=10)
+entry_cpf = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_cpf.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+
+label_cnpj = tk.Label(aba_cliente, text='Cnpj:')
+label_cnpj.grid(row=3, column=0, padx=10, pady=10)
+entry_cnpj = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_cnpj.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+
+label_email = tk.Label(aba_cliente, text='E-mail:')
+label_email.grid(row=4, column=0, padx=10, pady=10)
+entry_email = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_email.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+label_rua = tk.Label(aba_cliente, text='Rua:')
+label_rua.grid(row=5, column=0, padx=10, pady=10)
+entry_rua = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=23)
+entry_rua.grid(row=5, column=1, padx=10, pady=10, sticky="w")
+
+label_numero = tk.Label(aba_cliente, text='')
+label_numero.grid(row=5, column=2, padx=10, pady=10)
+entry_numero = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=15)
+entry_numero.grid(row=5, column=1, padx=10, pady=10, sticky="e")
+
+label_bairro = tk.Label(aba_cliente, text='Bairro:')
+label_bairro.grid(row=7, column=0, padx=10, pady=10)
+entry_bairro = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_bairro.grid(row=7, column=1, padx=10, pady=10, sticky="w")
+
+label_cidade = tk.Label(aba_cliente, text='Cidade:')
+label_cidade.grid(row=8, column=0, padx=10, pady=10)
+entry_cidade = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_cidade.grid(row=8, column=1, padx=10, pady=10, sticky="w")
+
+label_estado = tk.Label(aba_cliente, text='Estado:')
+label_estado.grid(row=9, column=0, padx=10, pady=10)
+entry_estado = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=50)
+entry_estado.grid(row=9, column=1, padx=10, pady=10, sticky="w")
+
+label_ddd = tk.Label(aba_cliente, text='DDD:')
+label_ddd.grid(row=10, column=0, padx=10, pady=10)
+entry_ddd = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=10)
+entry_ddd.grid(row=10, column=1, padx=10, pady=10, sticky="w")
+
+label_telefone = tk.Label(aba_cliente, text='Telefone:')
+label_telefone.grid(row=10, column=1, padx=10, pady=10)
+entry_telefone = ttk.Entry(aba_cliente, style='EstiloEntry.TEntry', width=13)
+entry_telefone.grid(row=10, column=1, padx=10, pady=10, sticky="e")
+
+# descriçao para os campos (obrigatorios ou opcional)
+desc_nome = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_nome.grid(row=0, column=3, padx=5, pady=10)
+
+desc_data = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_data.grid(row=1, column=3, padx=5, pady=10)
+
+desc_cpf = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_cpf.grid(row=2, column=3, padx=5, pady=10)
+
+desc_cnpj = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_cnpj.grid(row=3, column=3, padx=5, pady=10)
+
+desc_email = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_email.grid(row=4, column=3, padx=5, pady=10)
+
+desc_rua = tk.Label(aba_cliente, text='(Obrigatório)      Nº:')
+desc_rua.grid(row=5, column=1, padx=5, pady=10)
+
+desc_numero = tk.Label(aba_cliente, text='(Opcional)')
+desc_numero.grid(row=5, column=3, padx=5, pady=10)
+
+desc_bairro = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_bairro.grid(row=7, column=3, padx=5, pady=10)
+
+desc_cidade = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_cidade.grid(row=8, column=3, padx=5, pady=10)
+
+desc_estado = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_estado.grid(row=9, column=3, padx=5, pady=10)
+
+desc_ddd = tk.Label(aba_cliente, text='(Obrigatório)      Telefone: ')
+desc_ddd.grid(row=10, column=1, padx=5, pady=10)
+
+desc_telefone = tk.Label(aba_cliente, text='(Obrigatório)')
+desc_telefone.grid(row=10, column=3, padx=5, pady=10)
+
+# Configurando o estilo para os botões.
+style = ttk.Style()
+style.configure('Estilo.TButton', foreground='blue')
+
+# botao de inserir cliente
+botao_inserir_cliente = ttk.Button(aba_cliente, text='Inserir Cadastro', command=botao_pra_inserir_cliente, style='Estilo.TButton', takefocus=False, width=25)
+botao_inserir_cliente.grid(row=13, columnspan=3, padx=10, pady=10)
+
+# ABA RECURSO HUMANOS (FUNCIONARIO) BOTOES QUE VAO FICAR NA ABA DO 'RECURSOS HUMANOS'
+aba_funcionario = ttk.Frame(notebook, takefocus=False)
+aba_funcionario.grid(row=0, column=1)
+
+# nomeando a segunda aba (funcionario)
+notebook.add(aba_funcionario, text='Recursos Humano')
+
+# ABA FUNCIONÁRIOS
+botao_cadastro_funcionario = tk.Button(aba_funcionario, text='Cadastrar Funcionário', command=criar_janela_cadastro, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastro_funcionario.grid(row=1, column=1, padx=10, pady=10)
+
+botao_visualizar_funcionario = tk.Button(aba_funcionario, text='Visualizar Funcionários', command=selecionar_dados_funcionario,  bg='yellow', fg='black', width=45, takefocus=False, bd=3)
+botao_visualizar_funcionario.grid(row=1, column=2, padx=10, pady=10)
+
+botao_selecionar_cliente = tk.Button(aba_cliente, text='Visualizar Clientes', command=selecionar_dados_cliente, bg='green', fg='white', width=25, takefocus=False, bd=5)
+botao_selecionar_cliente.grid(row=13, column=3, padx=10, pady=10) # ao clicar nesse botao
+
+botao_cadastrar_cargo = tk.Button(aba_funcionario, text='Cadastrar Cargo', command=criar_janela_cadastro_cargo, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_cargo.grid(row=2, column=1, padx=10, pady=10)
+
+botao_visualizar_cargo = tk.Button(aba_funcionario, text='Visualizar Cargos', command=selecionar_dados_cargo, bg='yellow', fg='black', width=45, takefocus=False, bd=3)
+botao_visualizar_cargo.grid(row=2, column=2, padx=10, pady=10) # aqui chama os resultados quando clicado
+
+botao_cadastrar_estado = tk.Button(aba_funcionario, text='Cadastrar Estados', command=criar_janela_cadastro_estado, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_estado.grid(row=3, column=1, padx=10, pady=10)
+
+botao_visualizar_estado = tk.Button(aba_funcionario, text='Visualizar Estados', command=selecionar_dados_estado, bg='yellow', fg='black', width=45, takefocus=False, bd=3)
+botao_visualizar_estado.grid(row=3, column=2, padx=10, pady=10)
+
+botao_cadastrar_senhas = tk.Button(aba_funcionario, text=' Cadastro login geral', command= criar_janela_cadastro_senhageral, bg='blue', fg='white', bd=3, width=45, takefocus=False)
+botao_cadastrar_senhas.grid(row=4, column=1, padx=10, pady=10)
+
+botao_visualizar_pagamento = tk.Button(aba_funcionario, text='Consultar Folha de Pagamento CPF', command=criar_janela_exibicao_sp_pagamento, bg='yellow', fg='black', bd=3, width=45, takefocus=False)
+botao_visualizar_pagamento.grid(row=4, column=2, padx=10, pady=10)
+
+botao_update_cliente = tk.Button(aba_funcionario, text='Atualizar Cadastro Cliente', command=update_cliente, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_update_cliente.grid(row=5, column=2, padx=10, pady=10)
+
+botao_visualizar_info_vendedor = tk.Button(aba_funcionario, text='Consultar Informações Vendedor', command=criar_janela_exibicao_info_vendedor, bg='blue', fg='white', bd=3, width=45, takefocus=False)
+botao_visualizar_info_vendedor.grid(row=5, column=1, padx=10, pady=10)
+
+botao_update_funcionario = tk.Button(aba_funcionario, text='Atualizar Funcionario', command=update_funcionario, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_update_funcionario.grid(row=6, column=1, padx=10, pady=10)
+
+botao_deletar_funcionario = tk.Button(aba_funcionario, text='Excluir Funcionário', command=delete_funcionario, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_funcionario.grid(row=6, column=2, padx=10, pady=10)
+
+botao_deletar_cargo = tk.Button(aba_funcionario, text='Excluir Cargo', command=delete_cargo, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_cargo.grid(row=7, column=1, padx=10, pady=10)
+
+
+# ABA COMERCIAL
+aba_comercial = ttk.Frame(notebook, takefocus=False)
+aba_comercial.grid(row=0, column=2)
+
+notebook.add(aba_comercial, text='Comercial/Vendas')
+
+botao_cadastrar_area_vendedor = tk.Button(aba_comercial, text='Cadastrar área de Atuação Vendedor', command=criar_janela_cadastro_area, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_area_vendedor.grid(row=0, column=0, padx=10, pady=10)
+
+botao_visualizar_area = tk.Button(aba_comercial, text='Visualizar Área de Atuação Vendedor', command=selecionar_dados_area, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botao_visualizar_area.grid(row=0, column=1, padx=10, pady=10)
+
+botao_cadastrar_meta = tk.Button(aba_comercial, text='Cadastrar Meta Vendedor', command=criar_janela_cadastro_meta, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_meta.grid(row=1, column=0, padx=10, pady=10)
+
+botao_visualizar_meta = tk.Button(aba_comercial, text='Visualizar Meta', command=selecionar_dados_meta, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botao_visualizar_meta.grid(row=1, column=1, padx=10, pady=10)
+
+botao_cadastrar_produto = tk.Button(aba_comercial, text='Cadastrar Produto', command=criar_janela_cadastro_produto, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_produto.grid(row=2, column=0, padx=10, pady=10)
+
+botao_visualizar_produto = tk.Button(aba_comercial, text='Visualizar produto', command=selecionar_dados_produto, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botao_visualizar_produto.grid(row=2, column=1, padx=10, pady=10)
+
+botao_cadastrar_pedido = tk.Button(aba_comercial, text='Realizar Pedido', command=criar_cadastro_pedido, bg='blue', fg='white', takefocus=False, width=45, bd=3)
+botao_cadastrar_pedido.grid(row=3, column=0, padx=10, pady=10)
+
+botao_visualizar_pedido = tk.Button(aba_comercial, text='Visualizar Pedido', command=selecionar_dados_pedido, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botao_visualizar_pedido.grid(row=3, column=1, padx=10, pady=10)
+
+botao_visualizar_historico_meta = tk.Button(aba_comercial, text='Visualizar Histórico Metas', command=selecionar_dados_historico, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botao_visualizar_historico_meta.grid(row=4, column=1, padx=10, pady=10)
+
+botao_visualizar_fabricacao = tk.Button(aba_comercial, text='Produto em Fabricação', command=selecionar_dados_fabricacao, bg='blue', fg='white', width=45, bd=3, takefocus=False)
+botao_visualizar_fabricacao.grid(row=4, column=0, padx=10, pady=10)
+
+botao_visualizar_info_vendedor = tk.Button(aba_comercial, text='Consultar Informações Vendedores', command=criar_janela_exibicao_info_vendedor, bg='blue', fg='white', bd=3, takefocus=False, width=45)
+botao_visualizar_info_vendedor.grid(row=5, column=0, padx=10, pady=10)
+
+botao_visualizar_status = tk.Button(aba_comercial, text='Consultar Status Pedido', command=criar_janela_exibicao_status_pedido, bg='yellow', fg='black', bd=3, width=45, takefocus=False)
+botao_visualizar_status.grid(row=5, column=1, padx=10, pady=10)
+
+botao_atualizar_area = tk.Button(aba_comercial, text='Atualizar Área Vendedor', command=update_area_vendedor, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_atualizar_area.grid(row=6, column=0, padx=10, pady=10)
+
+botao_atualizar_produto = tk.Button(aba_comercial, text='Atualizar Produto', command=update_produto, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_atualizar_produto.grid(row=6, column=1, padx=10, pady=10)
+
+botao_atualizar_meta = tk.Button(aba_comercial, text='Atualizar Meta', command=update_meta, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_atualizar_meta.grid(row=7, column=0, padx=10, pady=10)
+
+botao_update_cliente = tk.Button(aba_comercial, text='Atualizar Cadastro Cliente', command=update_cliente, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_update_cliente.grid(row=7, column=1, padx=10, pady=10)
+
+botao_deletar_cliente = tk.Button(aba_comercial, text='Excluir Cliente', command=delete_cliente, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_cliente.grid(row=8, column=0, padx=10, pady=10)
+
+botao_deletar_meta = tk.Button(aba_comercial, text='Excluir Meta', command=delete_meta, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_meta.grid(row=8, column=1, padx=10, pady=10)
+
+botao_deletar_produto = tk.Button(aba_comercial, text='Excluir Produto', command=delete_produto, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_produto.grid(row=9, column=0, padx=10, pady=10)
+
+botao_deletar_produto_em_fabricacao = tk.Button(aba_comercial, text='Excluir Fabricação', command=delete_fabricacao, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_produto_em_fabricacao.grid(row=9, column=1, padx=10, pady=10)
+
+
+# ABA ADMINISTRATIVO
+
+aba_administrativo = ttk.Frame(notebook, takefocus=False)
+aba_administrativo.grid(row=0, column=3)
+
+notebook.add(aba_administrativo, text='Administrativo')
+
+botao_cadastro_fornecedor = tk.Button(aba_administrativo, text='Cadastrar Fornecedor', command=criar_janela_cadastro_fornecedor, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastro_fornecedor.grid(row=0, column=1, padx=10, pady=10)
+
+botoao_visualizar_fornecedor = tk.Button(aba_administrativo, text='Visualizar Fornecedor', command=selecionar_dados_fornecedor, bg='yellow', fg='black', takefocus=False, bd=3, width=45)
+botoao_visualizar_fornecedor.grid(row=0, column=2, padx=10, pady=10)
+
+botao_gerar_nf = tk.Button(aba_administrativo, text='Gerar Nota Fiscal', command=cadastro_nf, bg='blue', fg='white', bd=3, width=45, takefocus=False)
+botao_gerar_nf.grid(row=1, column=1, padx=10, pady=10)
+
+botao_visualizar_notas = tk.Button(aba_administrativo, text='Visualizar Notas', command=selecionar_dados_nf, bg='yellow', fg='black', bd=3, width=45, takefocus=False)
+botao_visualizar_notas.grid(row=1, column=2, padx=10, pady=10)
+
+botao_pagamento = tk.Button(aba_administrativo, text='Gerar folha de pagamento', command=cadastro_folha,  bg='blue', fg='white', bd=3, takefocus=False, width=45)
+botao_pagamento.grid(row=2, column=1, padx=10, pady=10)
+
+botao_visualizar_folha = tk.Button(aba_administrativo, text='Visualizar folha de pagamento', command=selecionar_dados_folha, bg='yellow', fg='black', bd=3, takefocus=False, width=45)
+botao_visualizar_folha.grid(row=2, column=2, padx=10, pady=10)
+
+botao_visualizar_status = tk.Button(aba_administrativo, text='Consultar Status Pedido', command=criar_janela_exibicao_status_pedido, bg='blue', fg='white', bd=3, width=45, takefocus=False)
+botao_visualizar_status.grid(row=3, column=1, padx=10, pady=10)
+
+botao_update_cliente2 = tk.Button(aba_administrativo, text='Atualizar Cadastro Cliente', command=update_cliente, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_update_cliente2.grid(row=3, column=2, padx=10, pady=10)
+
+botao_visualizar_fabricacao = tk.Button(aba_administrativo, text='Produto em Fabricação', command=selecionar_dados_fabricacao, bg='blue', fg='white', width=45, bd=3, takefocus=False)
+botao_visualizar_fabricacao.grid(row=4, column=1, padx=10, pady=10)
+
+botao_atualizar_fornecedor = tk.Button(aba_administrativo, text='Atualizar Fornecedor', command=update_fornecedor, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_atualizar_fornecedor.grid(row=4, column=2, padx=10, pady=10)
+
+botao_deletar_fornecedor = tk.Button(aba_administrativo, text='Exlcuir Fornecedor', command=delete_fornecedor, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_fornecedor.grid(row=5, column=1, padx=10, pady=10)
+
+botao_deletar_nota = tk.Button(aba_administrativo, text='Exlcuir Nota Fiscal', command=delete_nota, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_nota.grid(row=5, column=2, padx=10, pady=10)
+
+
+# ABA ESTOQUE/PRODUÇÃO
+aba_estoque = ttk.Frame(notebook, takefocus=False)
+aba_estoque.grid(row=0, column=4)
+
+notebook.add(aba_estoque, text='Estoque/Produção')
+
+botao_cadastro_estoque = tk.Button(aba_estoque, text='Cadastrar Estoque de Material', command=criar_janela_cadastro_estoque, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastro_estoque.grid(row=0, column=1, padx=10, pady=10)
+
+botao_visualizar_estoque = tk.Button(aba_estoque, text='Visualizar Estoque', command=selecionar_dados_estoque, bg='yellow', fg='black', width=45, takefocus=False, bd=3)
+botao_visualizar_estoque.grid(row=0, column=2, padx=10, pady=10)
+
+botao_cadastrar_material_consumo = tk.Button(aba_estoque, text='Saída de Material', command=cadastro_saida_material, bg='blue', fg='white', width=45, takefocus=False, bd=3)
+botao_cadastrar_material_consumo.grid(row=1, column=1, padx=10, pady=10)
+
+botao_visualizar_consumo = tk.Button(aba_estoque, text='Visualizar saídas de Material', command=selecionar_dados_material_consumo, bg='yellow', fg='black', width=45, takefocus=False, bd=3)
+botao_visualizar_consumo.grid(row=1, column=2, padx=10, pady=10)
+
+botao_visualizar_fabricacao = tk.Button(aba_estoque, text='Produto em Fabricação', command=selecionar_dados_fabricacao, bg='blue', fg='white', width=45, bd=3, takefocus=False)
+botao_visualizar_fabricacao.grid(row=2, column=1, padx=10, pady=10)
+
+botao_visualizar_materiais = tk.Button(aba_estoque, text='Consultar Material por Pedido', command=criar_janela_exibicao_material_pedido, bg='yellow', fg='black', bd=3, width=45, takefocus=False)
+botao_visualizar_materiais.grid(row=2, column=2, padx=10, pady=10)
+
+botao_visualizar_status2 = tk.Button(aba_estoque, text='Consultar Status Pedido', command=criar_janela_exibicao_status_pedido, bg='blue', fg='white', bd=3, width=45, takefocus=False)
+botao_visualizar_status2.grid(row=3, column=1, padx=10, pady=10)
+
+botao_atualizar_estoque = tk.Button(aba_estoque, text='Atualizar Estoque de Material', command=update_estoque, bg='green', fg='white', bd=3, width=45, takefocus=False)
+botao_atualizar_estoque.grid(row=3, column=2, padx=10, pady=10)
+
+botao_deletar_saida = tk.Button(aba_estoque, text='Deletar saída', command=delete_saida, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_saida.grid(row=4, column=1, padx=10, pady=10)
+
+botao_deletar_producao = tk.Button(aba_estoque, text='Deletar Produção', command=delete_produto_fabricacao, bg='red', fg='white', bd=3, width=45, takefocus=False)
+botao_deletar_producao.grid(row=4, column=2, padx=10, pady=10)
+
+# Definir qual aba será aberta quando iniciar o programa
+notebook.select(aba_estoque)
