@@ -1,0 +1,640 @@
+# ######################################### INSERÇAO DE DADOS DA JANELA PRINCIPAL ##########################################################
+
+def inserir_cliente(nome, data_de_nascimento, cpf, cnpj, email, rua, numero, bairro, cidade, estado, ddd, telefone):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        if not nome or not data_de_nascimento or not cpf or not cnpj or not email or not rua or not bairro or not cidade or not estado or not ddd or not telefone:
+            messagebox.showinfo('Campos vazios', 'Por favor preencha todos os campos obrigatórios')
+            return
+
+        if len(nome.split()) < 2:
+            messagebox.showinfo('Nome', 'Por favor, digite o nome completo')
+            return
+
+        if not re.match(r'\d{2}\/\d{2}\/\d{4}', data_de_nascimento):
+            messagebox.showwarning('Formato DATA', 'O Formato do campo Data de nascimento deve ser: (00/00/0000)')
+            return
+
+        if not re.match(r'\d{3}\.\d{3}\.\d{3}\-\d{2}', cpf) or len(cpf) < 11:
+            messagebox.showwarning('Formato CPF', 'O Formato do campo CPF deve ser: (000.000.000-00) e conter 11 numeros!')
+            return
+
+        if not re.match(r'\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}', cnpj):
+            messagebox.showwarning('Formato CNPJ', 'O Formato do CNPJ deve ser: (12.345.678/0003-00) e conter 14 numeros!')
+            return
+
+        if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            messagebox.showwarning('E-MAIL', 'Por favor, Verifique se no campo E-MAIL, contém: ("@", ".")')
+            return
+
+        cursor.execute('SELECT CPF, CNPJ FROM CLIENTE WHERE CPF = ? OR CNPJ = ?', cpf, cnpj)
+        resultado = cursor.fetchone()
+        if resultado:
+            messagebox.showwarning('USUÁRIO JÁ CADASTRADO!', 'O USUÁRIO JÁ EXISTE EM NOSSO SISTEMA!')
+            return
+
+        else:
+            cursor.execute(''' INSERT INTO CLIENTE (DATA, NOME, DATA_DE_NASCIMENTO, CPF, CNPJ, EMAIL, RUA, NUMERO, BAIRRO, CIDADE, ESTADO, DDD, TELEFONE) 
+              VALUES (GETDATE(),?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', nome, data_de_nascimento, cpf, cnpj, email, rua, numero, bairro, cidade, estado, ddd, telefone)
+            conn.commit()
+            messagebox.showinfo('Sucesso', 'Os dados foram inseridos')
+            limpar_tela()
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível inserir dados {erro}')
+
+
+def botao_pra_inserir_cliente():
+
+    nome = entry_nome.get()
+    data_de_nascimento = entry_data_de_nascimento.get()
+    cpf = entry_cpf.get()
+    cnpj = entry_cnpj.get()
+    email = entry_email.get()
+    rua = entry_rua.get()
+    numero = entry_numero.get()
+    bairro = entry_bairro.get()
+    cidade = entry_cidade.get()
+    estado = entry_estado.get()
+    ddd = entry_ddd.get()
+    telefone = entry_telefone.get()
+
+    inserir_cliente(nome, data_de_nascimento, cpf, cnpj, email, rua, numero, bairro, cidade, estado, ddd, telefone)
+
+
+def inserir_dados_funcionario(data_admissao, nome, cpf, pis, rua, numero, bairro, cidade, estado, ddd, telefone, sexo, idcargo, status, salario):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        if not data_admissao or not nome or not cpf or not pis or not rua or not bairro or not cidade or not estado or not ddd or not telefone or not idcargo or not status or not salario:
+            messagebox.showwarning('Campos Vazios', 'Por favor, Preencha todos os campos obrigatórios')
+            return
+
+        if len(nome.split()) < 2:
+            messagebox.showinfo('Nome', 'Por favor, digite o nome completo')
+            return
+
+        if not re.match(r'\d{2}\/\d{2}\/\d{4}', data_admissao):
+            messagebox.showwarning('Formato DATA', 'O Formato do campo Data de Admissão deve ser: (00/00/0000)')
+            return
+
+        cursor.execute('SELECT CPF FROM FUNCIONARIO WHERE CPF = ? ', cpf)
+        resultado = cursor.fetchone()
+        if resultado:
+            messagebox.showwarning('USUÁRIO JÁ CADASTRADO!', 'O USUÁRIO JÁ EXISTE EM NOSSO SISTEMA!')
+            return
+
+        if not re.match(r'\d{3}\.\d{3}\.\d{3}\-\d{2}', cpf):
+            messagebox.showwarning('Formato CPF', 'O Formato do campo CPF deve ser: (000.000.000-00) e conter 11 numeros!')
+            return
+
+        if not re.match(r'\d{3}\.\d{5}\.\d{2}\-\d{1}', pis):
+            messagebox.showwarning('PIS', 'O Formato do PIS deve ser: (000.00000.00-0) e conter 11 numeros!')
+            return
+
+        else:
+            cursor.execute('''
+                INSERT INTO FUNCIONARIO (DATA_DE_ADMISSAO, NOME, CPF, PIS, RUA, NUMERO, BAIRRO, CIDADE, ESTADO, DDD, TELEFONE, SEXO, ID_CARGO, STATUS, SALARIO_BRUTO, SALARIO_BRUTO_COM_COMISSAO)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+            ''', data_admissao, nome, cpf, pis, rua, numero, bairro, cidade, estado, ddd, telefone, sexo, idcargo, status, salario)
+            conn.commit()
+            messagebox.showinfo('Sucesso', 'Os dados foram inseridos')
+            limpar_tela_funcionario()
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', 'Não foi possível inserir os dados: ' + str(erro))
+
+
+# colocando como global os entry para dar pra limpar as telas.
+entry_data_admissao = None
+entry_nome_func = None
+entry_cpf_func = None
+entry_pis_func = None
+entry_rua_func = None
+entry_numero_func = None
+entry_bairro_func = None
+entry_cidade_func = None
+entry_estado_func = None
+entry_ddd_func = None
+entry_telefone_func = None
+entry_sexo_func = None
+entry_idcargo_func = None
+entry_status_func = None
+entry_salario_func = None
+
+
+
+
+
+
+# ############################# CRIAÇÃO DAS JANELAS COM OS CAMPOS DE INSERÇÃO ##########################################
+
+
+def criar_janela_cadastro(): # ao ser chamado ele vai criar outra janela com tudo isso dentro.
+
+    global entry_data_admissao, entry_nome_func, entry_cpf_func, entry_pis_func, entry_rua_func, entry_numero_func, entry_bairro_func, entry_cidade_func, entry_estado_func, entry_ddd_func, entry_telefone_func, entry_sexo_func, entry_idcargo_func, entry_status_func, entry_salario_func
+
+    janelacadastro = tk.Tk()
+    janelacadastro.title('Funcionários')
+    janelacadastro.geometry('1200x300')
+
+    # Criando os campos para FUNCIONARIO
+    label_data_admissao = tk.Label(janelacadastro, text='Data de Admissão: ')
+    label_data_admissao.grid(row=0, column=0, padx=10, pady=10)
+    entry_data_admissao = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=22)
+    entry_data_admissao.grid(row=0, column=1, padx=1, pady=10, sticky="w")
+    desc_data_func = tk.Label(janelacadastro, text=f'{"(00/00/0000)"}')
+    desc_data_func.grid(row=0, column=1, padx=1, pady=10)
+
+    label_nome_func = tk.Label(janelacadastro, text='Nome: ')
+    label_nome_func.grid(row=0, column=2, padx=10, pady=10)
+    entry_nome_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=70)
+    entry_nome_func.grid(row=0, column=3, padx=10, pady=10)
+
+    label_cpf_func = tk.Label(janelacadastro, text='Cpf: ')
+    label_cpf_func.grid(row=0, column=5, padx=10, pady=10)
+    entry_cpf_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=40)
+    entry_cpf_func.grid(row=0, column=6, padx=10, pady=10, sticky="w")
+
+    label_pis_func = tk.Label(janelacadastro, text='Pis: ')
+    label_pis_func.grid(row=1, column=0, padx=10, pady=10)
+    entry_pis_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=30)
+    entry_pis_func.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+    label_rua_func = tk.Label(janelacadastro, text='Rua: ')
+    label_rua_func.grid(row=1, column=2, padx=10, pady=10)
+    entry_rua_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=70)
+    entry_rua_func.grid(row=1, column=3, padx=10, pady=10, sticky="w")
+
+    label_numero_func = tk.Label(janelacadastro, text='Nº: ')
+    label_numero_func.grid(row=1, column=5, padx=10, pady=10)
+    entry_numero_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=15)
+    entry_numero_func.grid(row=1, column=6, padx=10, pady=10, sticky="w")
+    desc_salario_func = tk.Label(janelacadastro, text=f'{"(Residência)":<25}')
+    desc_salario_func.grid(row=1, column=6, padx=10, pady=10)
+
+    label_bairro_func = tk.Label(janelacadastro, text='Bairro: ')
+    label_bairro_func.grid(row=2, column=0, padx=10, pady=10)
+    entry_bairro_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=30)
+    entry_bairro_func.grid(row=2, column=1, padx=10, pady=10)
+
+    label_cidade_func = tk.Label(janelacadastro, text='Cidade: ')
+    label_cidade_func.grid(row=2, column=2, padx=10, pady=10)
+    entry_cidade_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=40)
+    entry_cidade_func.grid(row=2, column=3, padx=10, pady=10, sticky="w")
+
+    label_estado_func = tk.Label(janelacadastro, text='Estado: ')
+    label_estado_func.grid(row=2, column=5, padx=10, pady=10)
+    entry_estado_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=15)
+    entry_estado_func.grid(row=2, column=6, padx=10, pady=10, sticky="w")
+
+    label_ddd_func = tk.Label(janelacadastro, text='DDD: ')
+    label_ddd_func.grid(row=3, column=0, padx=10, pady=10)
+    entry_ddd_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=15)
+    entry_ddd_func.grid(row=3, column=1, padx=10, pady=10, stick="w")
+
+    label_telefone_func = tk.Label(janelacadastro, text='Telefone: ')
+    label_telefone_func.grid(row=3, column=2, padx=10, pady=10)
+    entry_telefone_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=30)
+    entry_telefone_func.grid(row=3, column=3, padx=10, pady=10, stick="w")
+
+    label_sexo_func = tk.Label(janelacadastro, text='Sexo: ')
+    label_sexo_func.grid(row=3, column=5, padx=10, pady=10)
+    entry_sexo_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=20)
+    entry_sexo_func.grid(row=3, column=6, padx=10, pady=10, stick="w")
+    desc_sexo_func = tk.Label(janelacadastro, text=f'{"(M / F)":<25}')
+    desc_sexo_func.grid(row=3, column=6, padx=10, pady=10)
+
+    label_idcargo_func = tk.Label(janelacadastro, text='ID Cargo: ')
+    label_idcargo_func.grid(row=4, column=0, padx=10, pady=10)
+    entry_idcargo_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=20)
+    entry_idcargo_func.grid(row=4, column=1, padx=10, pady=10, stick="w")
+
+    label_status_func = tk.Label(janelacadastro, text='Status: ')
+    label_status_func.grid(row=4, column=2, padx=10, pady=10)
+    entry_status_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=20)
+    entry_status_func.grid(row=4, column=3, padx=10, pady=10, stick="w")
+    desc_status_func = tk.Label(janelacadastro, text=f'{"(Pendente/Ativo/Desativado)":<30}')
+    desc_status_func.grid(row=4, column=3, padx=10, pady=10)
+
+    label_salario_func = tk.Label(janelacadastro, text='Salário: ')
+    label_salario_func.grid(row=4, column=5, padx=10, pady=10)
+    entry_salario_func = ttk.Entry(janelacadastro, style='EstiloEntry.TEntry', width=25)
+    entry_salario_func.grid(row=4, column=6, padx=10, pady=10, stick="w")
+    desc_salario_func = tk.Label(janelacadastro, text=f'{"(Separado por Pontos . )":<25}')
+    desc_salario_func.grid(row=4, column=6, padx=10, pady=10)
+
+    botao_inserir_funcionario = tk.Button(janelacadastro, text='Inserir Funcionário', bg='blue', fg='black', bd=5, font=('Helvetica', 10, 'bold'), command=lambda: inserir_dados_funcionario(
+        entry_data_admissao.get(),
+        entry_nome_func.get(),
+        entry_cpf_func.get(),
+        entry_pis_func.get(),
+        entry_rua_func.get(),
+        entry_numero_func.get(),
+        entry_bairro_func.get(),
+        entry_cidade_func.get(),
+        entry_estado_func.get(),
+        entry_ddd_func.get(),
+        entry_telefone_func.get(),
+        entry_sexo_func.get(),
+        entry_idcargo_func.get(),
+        entry_status_func.get(),
+        entry_salario_func.get()
+        ))
+    botao_inserir_funcionario.grid(row=6, column=3, padx=10, pady=10)
+
+
+# Criaçao da janela de cadastrar cargos
+def criar_janela_cadastro_cargo():
+
+    global entry_nome_cargo
+
+    janelacargo = tk.Tk()
+    janelacargo.title('Cadastro de Cargos')
+    janelacargo.geometry('260x150')
+
+    label_nome_cargo = tk.Label(janelacargo, text='Nome Cargo:')
+    label_nome_cargo.grid(row=0, column=0, padx=10, pady=10)
+    entry_nome_cargo = ttk.Entry(janelacargo, style='EstiloEntry.TEntry', width=20)
+    entry_nome_cargo.grid(row=0, column=1, padx=10, pady=10)
+
+    botao_inserir_cargo = tk.Button(janelacargo, text='Inserir Cargo', bg='blue', fg='white', bd=5, font=('Helvetica', 8, 'bold'), command=lambda: cadastrar_cargo(entry_nome_cargo.get()))
+    botao_inserir_cargo.grid(row=1, column=1, padx=10, pady=10)
+
+
+entry_estado1 = None
+
+
+def criar_janela_cadastro_estado():
+
+    global entry_estado1
+
+    janelaestado = tk.Tk()
+    janelaestado.title('Estados')
+    janelaestado.geometry('250x120')
+
+    label_estado1 = tk.Label(janelaestado, text='Estado:')
+    label_estado1.grid(row=0, column=0, padx=10, pady=10)
+    entry_estado1 = ttk.Entry(janelaestado, style='EstiloEntry.TEntry', width=20)
+    entry_estado1.grid(row=0, column=1, padx=10, pady=10)
+
+    botao_inserir_estado = tk.Button(janelaestado, text='Inserir Estado', bg='blue', fg='white', takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: inserir_dados_estado(entry_estado1.get()))
+    botao_inserir_estado.grid(row=1, column=1, padx=10, pady=10)
+
+
+entry_idfuncionario = None
+entry_idestado = None
+
+
+def criar_janela_cadastro_area():
+
+    global entry_idfuncionario, entry_idestado
+
+    janelaarea = tk.Tk()
+    janelaarea.title('Cadastro de Área')
+    janelaarea.geometry('350x150')
+
+    label_idfuncionario = tk.Label(janelaarea, text='ID FUNCIONÁRIO:')
+    label_idfuncionario.grid(row=0, column=0, padx=10, pady=10,)
+    entry_idfuncionario = ttk.Entry(janelaarea,  style='EstiloEntry.TEntry', width=20)
+    entry_idfuncionario.grid(row=0, column=1, padx=10, pady=10)
+
+    label_idestado = tk.Label(janelaarea, text='ID ESTADO:')
+    label_idestado.grid(row=1, column=0, padx=10, pady=10)
+    entry_idestado = ttk.Entry(janelaarea, style='EstiloEntry.TEntry', width=20)
+    entry_idestado.grid(row=1, column=1, padx=10, pady=10)
+
+    botao_inserir_area = tk.Button(janelaarea, text='Inserir Área', bg='blue', fg='white', takefocus=False, bd=3, command=lambda: cadastrar_area_atuacao(entry_idfuncionario.get(), entry_idestado.get()))
+    botao_inserir_area.grid(row=2, column=1, padx=10, pady=10)
+
+
+entry_idfuncionariom = None
+entry_valor_meta = None
+entry_data_final_meta = None
+
+
+def criar_janela_cadastro_meta():
+
+    global entry_idfuncionariom, entry_valor_meta, entry_data_final_meta
+
+    janelameta = tk.Tk()
+    janelameta.title('Cadastro de Meta')
+    janelameta.geometry('400x230')
+
+    label_idfuncionario = tk.Label(janelameta, text='ID VENDEDOR:')
+    label_idfuncionario.grid(row=0, column=1, padx=10, pady=10)
+    entry_idfuncionariom = ttk.Entry(janelameta,style='EstiloEntry.TEntry', width=20)
+    entry_idfuncionariom.grid(row=0, column=2, padx=10, pady=10)
+
+    label_valor_meta = tk.Label(janelameta, text='Valor Meta:')
+    label_valor_meta.grid(row=1, column=1, padx=10, pady=10)
+    entry_valor_meta = ttk.Entry(janelameta, style='EstiloEntry.TEntry', width=20)
+    entry_valor_meta.grid(row=1, column=2, padx=10, pady=10)
+
+    label_data_final_meta = tk.Label(janelameta, text='Data Final Da Meta:')
+    label_data_final_meta.grid(row=2, column=1, padx=10, pady=10)
+    entry_data_final_meta = ttk.Entry(janelameta, style='EstiloEntry.TEntry', width=20)
+    entry_data_final_meta.grid(row=2, column=2, padx=10, pady=10)
+
+    botao_inserir_meta = tk.Button(janelameta, text='Inserir Meta', bg='blue', fg='white', bd=5, font=('Helvetica', 8, 'bold'), command=lambda: cadastrar_meta(entry_idfuncionariom.get(), entry_valor_meta.get(), entry_data_final_meta.get()))
+    botao_inserir_meta.grid(row=3, column=2, padx=10, pady=10)
+
+
+entry_nomep = None
+entry_tipo = None
+entry_cor = None
+entry_turbo = None
+entry_porta = None
+entry_preco = None
+
+
+def criar_janela_cadastro_produto():
+
+    global entry_nomep, entry_tipo, entry_cor, entry_turbo, entry_porta, entry_preco
+
+    janelaproduto = tk.Tk()
+    janelaproduto.title('Cadastro de Produto')
+    janelaproduto.geometry('400x300')
+
+    label_nomep = tk.Label(janelaproduto, text='Nome Produto:')
+    label_nomep.grid(row=0, column=1, padx=10, pady=10)
+    entry_nomep = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_nomep.grid(row=0, column=2, padx=10, pady=10)
+
+    label_tipo = tk.Label(janelaproduto, text='Descrição:')
+    label_tipo.grid(row=1, column=1, padx=10, pady=10)
+    entry_tipo = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_tipo.grid(row=1, column=2, padx=10, pady=10)
+
+    label_cor = tk.Label(janelaproduto, text='Cor:')
+    label_cor.grid(row=2, column=1, padx=10, pady=10)
+    entry_cor = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_cor.grid(row=2, column=2, padx=10, pady=10)
+
+    label_turbo = tk.Label(janelaproduto, text='Turbo:')
+    label_turbo.grid(row=3, column=1, padx=10, pady=10)
+    entry_turbo = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_turbo.grid(row=3, column=2, padx=10, pady=10)
+
+    label_porta = tk.Label(janelaproduto, text='Portas:')
+    label_porta.grid(row=4, column=1, padx=10, pady=10)
+    entry_porta = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_porta.grid(row=4, column=2, padx=10, pady=10)
+
+    label_preco = tk.Label(janelaproduto, text='Preço:')
+    label_preco.grid(row=5, column=1, padx=10, pady=10)
+    entry_preco = ttk.Entry(janelaproduto, style='EstiloEntry.TEntry', width=20)
+    entry_preco.grid(row=5, column=2, padx=10, pady=10)
+
+    botao_inserir_meta = tk.Button(janelaproduto, text='Inserir Meta', bg='blue', fg='white', bd=5, font=('Helvetica', 8, 'bold'), command=lambda: cadastrar_produto(entry_nomep.get(), entry_tipo.get(), entry_cor.get(), entry_turbo.get(), entry_porta.get(), entry_preco.get()))
+    botao_inserir_meta.grid(row=6, column=2, padx=10, pady=10)
+
+
+entry_nomef = entry_tipomaterial = entry_cnpjf = entry_dddf = entry_telefonef = None
+entry_emailf = entry_ruaf = entry_nf = entry_bairrof = entry_cidadef = None
+entry_estadof = entry_situacaof = None
+
+
+def criar_janela_cadastro_fornecedor():
+    global entry_nomef, entry_tipomaterial, entry_cnpjf, entry_dddf, entry_telefonef
+    global entry_emailf, entry_ruaf, entry_nf, entry_bairrof, entry_cidadef
+    global entry_estadof, entry_situacaof
+
+    janelafornecedor = tk.Tk()
+    janelafornecedor.title('Fornecedores')
+    janelafornecedor.geometry('1200x300')
+
+    label_nomef = tk.Label(janelafornecedor, text='Nome da Empresa:')
+    label_nomef.grid(row=0, column=0, padx=10, pady=10)
+    entry_nomef = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_nomef.grid(row=0, column=1, padx=10, pady=10)
+
+    label_tipomaterial = tk.Label(janelafornecedor, text='Tipo de Material:')
+    label_tipomaterial.grid(row=0, column=2, padx=10, pady=10)
+    entry_tipomaterial = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=50)
+    entry_tipomaterial.grid(row=0, column=3, padx=10, pady=10)
+
+    label_cnpjf = tk.Label(janelafornecedor, text='Cnpj:')
+    label_cnpjf.grid(row=0, column=4, padx=10, pady=10)
+    entry_cnpjf = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_cnpjf.grid(row=0, column=5, padx=10, pady=10)
+
+    label_dddf = tk.Label(janelafornecedor, text='DDD:')
+    label_dddf.grid(row=1, column=0, padx=10, pady=10)
+    entry_dddf = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=10)
+    entry_dddf.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+
+    label_telefonef = tk.Label(janelafornecedor, text='Telefone:')
+    label_telefonef.grid(row=1, column=2, padx=10, pady=10)
+    entry_telefonef = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_telefonef.grid(row=1, column=3, padx=10, pady=10,  sticky="w")
+
+    label_emailf = tk.Label(janelafornecedor, text='E-MAIL:')
+    label_emailf.grid(row=1, column=4, padx=10, pady=10)
+    entry_emailf = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_emailf.grid(row=1, column=5, padx=10, pady=10)
+
+    label_ruaf = tk.Label(janelafornecedor, text='Rua:')
+    label_ruaf.grid(row=2, column=0, padx=10, pady=10)
+    entry_ruaf = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_ruaf.grid(row=2, column=1, padx=10, pady=10)
+
+    label_nf = tk.Label(janelafornecedor, text='Número:')
+    label_nf.grid(row=2, column=2, padx=10, pady=10)
+    entry_nf = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=15)
+    entry_nf.grid(row=2, column=3, padx=10, pady=10, sticky="w")
+    desc_nf = tk.Label(janelafornecedor, text='(Opcional)')
+    desc_nf.grid(row=2, column=3)
+
+    label_bairrof = tk.Label(janelafornecedor, text='Bairro:')
+    label_bairrof.grid(row=2, column=4, padx=10, pady=10)
+    entry_bairrof = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_bairrof.grid(row=2, column=5, padx=10, pady=10, sticky="w")
+
+    label_cidadef = tk.Label(janelafornecedor, text='Cidade:')
+    label_cidadef.grid(row=3, column=0, padx=10, pady=10)
+    entry_cidadef = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_cidadef.grid(row=3, column=1, padx=10, pady=10)
+
+    label_estadof = tk.Label(janelafornecedor, text='Estado:')
+    label_estadof.grid(row=3, column=2, padx=10, pady=10)
+    entry_estadof = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_estadof.grid(row=3, column=3, padx=10, pady=10, sticky="w")
+
+    label_situacaof = tk.Label(janelafornecedor, text='Situação:')
+    label_situacaof.grid(row=3, column=4, padx=10, pady=10)
+    entry_situacaof = ttk.Entry(janelafornecedor, style='EstiloEntry.TEntry', width=40)
+    entry_situacaof.grid(row=3, column=5, padx=10, pady=10)
+
+    botao_inserir_fornecedor = tk.Button(janelafornecedor, text='Inserir Forncedor', bg='blue', fg='white', bd=5, font=('Helvetica', 8, 'bold'), command=lambda: inserir_dados_fornecedor(entry_nomef.get(), entry_tipomaterial.get(), entry_cnpjf.get(), entry_dddf.get(), entry_telefonef.get(), entry_emailf.get(), entry_ruaf.get(), entry_nf.get(), entry_bairrof.get(), entry_cidadef.get(), entry_estadof.get(), entry_situacaof.get()))
+    botao_inserir_fornecedor.grid(row=4, column=3, padx=10, pady=10)
+
+
+entry_id_fornecedor = entry_lote = entry_nome_produto = entry_tipo_material = entry_cor_material = None
+entry_tamanho = entry_quantidade = entry_data_validade = None
+
+
+def criar_janela_cadastro_estoque():
+
+    global entry_id_fornecedor, entry_lote, entry_nome_produto, entry_tipo_material, entry_cor_material
+    global entry_tamanho, entry_quantidade, entry_data_validade
+
+    janelaestoque = tk.Tk()
+    janelaestoque.title('Estoque Material')
+    janelaestoque.geometry('600x300')
+
+    label_id_fornecedor = tk.Label(janelaestoque, text='ID FORNECEDOR:')
+    label_id_fornecedor.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_fornecedor = ttk.Entry(janelaestoque)
+    entry_id_fornecedor.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+
+    label_lote = tk.Label(janelaestoque, text='Lote:')
+    label_lote.grid(row=0, column=1, padx=10, pady=10)
+    entry_lote = ttk.Entry(janelaestoque)
+    entry_lote.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+
+    label_nome_produto = tk.Label(janelaestoque, text='Nome Produto:')
+    label_nome_produto.grid(row=2, column=0, padx=10, pady=10)
+    entry_nome_produto = ttk.Entry(janelaestoque,  width=60)
+    entry_nome_produto.grid(row=2, column=1, padx=10, pady=10)
+
+    label_tipo_material = tk.Label(janelaestoque, text='Tipo de Material:')
+    label_tipo_material.grid(row=3, column=0, padx=10, pady=10)
+    entry_tipo_material = ttk.Entry(janelaestoque)
+    entry_tipo_material.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+
+    label_cor_material = tk.Label(janelaestoque, text='Cor:')
+    label_cor_material.grid(row=3, column=1, padx=10, pady=10)
+    entry_cor_material = ttk.Entry(janelaestoque)
+    entry_cor_material.grid(row=3, column=1, padx=10, pady=10, sticky="e")
+
+    label_tamanho = tk.Label(janelaestoque, text='Tamanho:')
+    label_tamanho.grid(row=4, column=0, padx=10, pady=10)
+    entry_tamanho = ttk.Entry(janelaestoque)
+    entry_tamanho.grid(row=4, column=1, padx=10, pady=10, sticky="w")
+
+    label_quantidade = tk.Label(janelaestoque, text='Quantidade:')
+    label_quantidade.grid(row=4, column=1, padx=10, pady=10)
+    entry_quantidade = ttk.Entry(janelaestoque)
+    entry_quantidade.grid(row=4, column=1, padx=10, pady=10, sticky="e")
+
+    label_data_validade = tk.Label(janelaestoque, text='Data de Validade:')
+    label_data_validade.grid(row=5, column=0, padx=10, pady=10)
+    entry_data_validade = ttk.Entry(janelaestoque)
+    entry_data_validade.grid(row=5, column=1, padx=10, pady=10, sticky="w")
+
+    botao_inserir_estoque = tk.Button(janelaestoque, text='Inserir Produto', bg='blue', fg='white', bd=5, font=('Helvetica', 10, 'bold'), command=lambda: inserir_cadastro_estoque(entry_id_fornecedor.get(), entry_lote.get(), entry_nome_produto.get(), entry_tipo_material.get(), entry_cor_material.get(), entry_tamanho.get(), entry_quantidade.get(), entry_data_validade.get()))
+    botao_inserir_estoque.grid(row=5, column=1, padx=10, pady=10, sticky="e")
+
+
+entry_id_cliente = entry_id_produto = entry_id_vendedor = entry_quantidade_p = entry_data_entrega_p = None
+entry_modo_pagamento = entry_parcelas = None
+
+
+def criar_cadastro_pedido():
+
+    global entry_id_cliente, entry_id_produto, entry_id_vendedor, entry_quantidade_p, entry_data_entrega_p
+    global entry_modo_pagamento, entry_parcelas
+
+    janelapedido = tk.Tk()
+    janelapedido.title('Pedidos')
+    janelapedido.geometry('400x400')
+
+    label_id_cliente = tk.Label(janelapedido, text='ID CLIENTE:')
+    label_id_cliente.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_cliente = ttk.Entry(janelapedido)
+    entry_id_cliente.grid(row=0, column=1, padx=10, pady=10)
+
+    label_id_produto = tk.Label(janelapedido, text='ID PRODUTO:')
+    label_id_produto.grid(row=1, column=0, padx=10, pady=10)
+    entry_id_produto = ttk.Entry(janelapedido)
+    entry_id_produto.grid(row=1, column=1, padx=10, pady=0)
+
+    label_id_vendedor = tk.Label(janelapedido, text='ID VENDEDOR:')
+    label_id_vendedor.grid(row=2, column=0, padx=10, pady=10)
+    entry_id_vendedor = ttk.Entry(janelapedido)
+    entry_id_vendedor.grid(row=2, column=1, padx=10, pady=10)
+
+    label_quantidade_p = tk.Label(janelapedido, text='QUANTIDADE:')
+    label_quantidade_p.grid(row=3, column=0, padx=10, pady=10)
+    entry_quantidade_p = ttk.Entry(janelapedido)
+    entry_quantidade_p.grid(row=3, column=1, padx=10, pady=10)
+
+    label_data_entrega_p = tk.Label(janelapedido, text='DATA DA ENTREGA:')
+    label_data_entrega_p.grid(row=4, column=0, padx=10, pady=10)
+    entry_data_entrega_p = ttk.Entry(janelapedido)
+    entry_data_entrega_p.grid(row=4, column=1, padx=10, pady=10)
+
+    label_modo_pagamento = tk.Label(janelapedido, text='Modo de Pagamento:')
+    label_modo_pagamento.grid(row=5, column=0, padx=10, pady=10)
+    entry_modo_pagamento = ttk.Entry(janelapedido)
+    entry_modo_pagamento.grid(row=5, column=1, padx=10, pady=10)
+
+    label_parcelas = tk.Label(janelapedido, text='Parcelas:')
+    label_parcelas.grid(row=6, column=0, padx=10, pady=10)
+    entry_parcelas = ttk.Entry(janelapedido)
+    entry_parcelas.grid(row=6, column=1, padx=10, pady=10)
+
+    botao_inserir_pedido = tk.Button(janelapedido, text='Inserir Pedido', command=lambda: inserir_dados_pedido(entry_id_cliente.get(), entry_id_produto.get(), entry_id_vendedor.get(), entry_quantidade_p.get(), entry_data_entrega_p.get(), entry_modo_pagamento.get(), entry_parcelas.get()), bg='blue', fg='white', bd=5, font=('Helvetica', 10, 'bold'))
+    botao_inserir_pedido.grid(row=7, column=1, padx=10, pady=10)
+
+
+entry_id_pedido = entry_id_estoque = entry_quantidade_consumo = None
+
+
+def cadastro_saida_material():
+
+    global entry_id_pedido, entry_id_estoque, entry_quantidade_consumo
+
+    janelaconsumo = tk.Tk()
+    janelaconsumo.title('Material de Consumo')
+    janelaconsumo.geometry('250x250')
+
+    label_id_pedido = tk.Label(janelaconsumo, text='ID PEDIDO:')
+    label_id_pedido.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_pedido = ttk.Entry(janelaconsumo)
+    entry_id_pedido.grid(row=0, column=1, padx=10, pady=10)
+
+    label_id_estoque = tk.Label(janelaconsumo, text='ID ESTOQUE:')
+    label_id_estoque.grid(row=1, column=0, padx=10, pady=10)
+    entry_id_estoque = ttk.Entry(janelaconsumo)
+    entry_id_estoque.grid(row=1, column=1, padx=10, pady=10)
+
+    label_quantidade_consumo = tk.Label(janelaconsumo, text='QUANTIDADE:')
+    label_quantidade_consumo.grid(row=2, column=0, padx=10, pady=10)
+    entry_quantidade_consumo = ttk.Entry(janelaconsumo)
+    entry_quantidade_consumo.grid(row=2, column=1, padx=10, pady=10)
+
+    botao_saida_material = tk.Button(janelaconsumo, text='Retirar Material', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: inserir_dados_retirada(entry_id_pedido.get(), entry_id_estoque.get(), entry_quantidade_consumo.get()))
+    botao_saida_material.grid(row=3, column=1, padx=10, pady=10)
+
+    janelaconsumo.mainloop()
+
+
+entry_id_funcionario = entry_calculo = None
+
+
+def cadastro_folha():
+
+    global entry_id_funcionario, entry_calculo
+
+    janelacalculo = tk.Tk()
+    janelacalculo.title('NF')
+    janelacalculo.geometry('300x150')
+
+    label_id_funcionario = tk.Label(janelacalculo, text='ID FUNCIONARIO:')
+    label_id_funcionario.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_funcionario = ttk.Entry(janelacalculo)
+    entry_id_funcionario.grid(row=0, column=1, padx=10, pady=10)
+
+    label_calculo = tk.Label(janelacalculo, text=' % DESCONTO INSS:')
+    label_calculo.grid(row=1, column=0, padx=10, pady=10)
+    entry_calculo = ttk.Entry(janelacalculo)
+    entry_calculo.grid(row=1, column=1, padx=10, pady=10)
+
+    botao_saida_material = tk.Button(janelacalculo, text='Gerar Nota Fiscal', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: inserir_dados_folha(entry_id_funcionario.get(), entry_calculo.get()))
+    botao_saida_material.grid(row=2, column=0, padx=10, pady=10)
+
+    janelacalculo.mainloop()
