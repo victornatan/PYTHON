@@ -1,0 +1,196 @@
+# ####################################### LIMPAR TELA ##################################################################
+
+
+def limpar_tela():
+    entry_nome.delete(0, tk.END)
+    entry_cpf.delete(0, tk.END)
+    entry_cnpj.delete(0, tk.END)
+    entry_email.delete(0, tk.END)
+    entry_rua.delete(0, tk.END)
+    entry_numero.delete(0, tk.END)
+    entry_bairro.delete(0, tk.END)
+    entry_cidade.delete(0, tk.END)
+    entry_estado.delete(0, tk.END)
+    entry_ddd.delete(0, tk.END)
+    entry_telefone.delete(0, tk.END)
+
+
+def limpar_tela_funcionario():
+    entry_data_admissao.delete(0, tk.END)
+    entry_nome_func.delete(0, tk.END)
+    entry_cpf_func.delete(0, tk.END)
+    entry_pis_func.delete(0, tk.END)
+    entry_rua_func.delete(0, tk.END)
+    entry_numero_func.delete(0, tk.END)
+    entry_bairro_func.delete(0, tk.END)
+    entry_cidade_func.delete(0, tk.END)
+    entry_estado_func.delete(0, tk.END)
+    entry_ddd_func.delete(0, tk.END)
+    entry_telefone_func.delete(0, tk.END)
+    entry_sexo_func.delete(0, tk.END)
+    entry_idcargo_func.delete(0, tk.END)
+    entry_status_func.delete(0, tk.END)
+    entry_salario_func.delete(0, tk.END)
+
+
+def limpar_tela_cargo():
+    entry_nome_cargo.delete(0, tk.END)
+
+
+def limpar_tela_estado():
+    entry_estado1.delete(0, tk.END)
+
+
+def limpar_tela_area():
+    entry_idfuncionario.delete(0, tk.END)
+    entry_idestado.delete(0, tk.END)
+
+
+def limpar_tela_meta():
+    entry_idfuncionariom.delete(0, tk.END)
+    entry_valor_meta.delete(0, tk.END)
+    entry_data_final_meta.delete(0, tk.END)
+
+
+def limpar_tela_produto():
+    entry_nomep.delete(0, tk.END)
+    entry_tipo.delete(0, tk.END)
+    entry_cor.delete(0, tk.END)
+    entry_turbo.delete(0, tk.END)
+    entry_porta.delete(0, tk.END)
+    entry_preco.delete(0, tk.END)
+
+
+def limpar_tela_fornecedor():
+    entry_nomef.delete(0, tk.END)
+    entry_tipomaterial.delete(0, tk.END)
+    entry_cnpjf.delete(0, tk.END)
+    entry_dddf.delete(0, tk.END)
+    entry_telefonef.delete(0, tk.END)
+    entry_emailf.delete(0, tk.END)
+    entry_ruaf.delete(0, tk.END)
+    entry_nf.delete(0, tk.END)
+    entry_bairrof.delete(0, tk.END)
+    entry_cidadef.delete(0, tk.END)
+    entry_estadof.delete(0, tk.END)
+    entry_situacaof.delete(0, tk.END)
+
+
+def limpar_tela_cadastro_estoque():
+     entry_id_fornecedor.delete(0, tk.END)
+     entry_lote.delete(0, tk.END)
+     entry_nome_produto.delete(0, tk.END)
+     entry_tipo_material.delete(0, tk.END)
+     entry_cor_material.delete(0, tk.END)
+     entry_tamanho.delete(0, tk.END)
+     entry_quantidade.delete(0, tk.END)
+     entry_data_validade.delete(0, tk.END)
+
+
+def limpar_tela_cadastro_pedido():
+    entry_id_cliente.delete(0, tk.END)
+    entry_id_produto.delete(0, tk.END)
+    entry_id_vendedor.delete(0, tk.END)
+    entry_quantidade_p.delete(0, tk.END)
+    entry_data_entrega_p.delete(0, tk.END)
+    entry_modo_pagamento.delete(0, tk.END)
+    entry_parcelas.delete(0, tk.END)
+
+
+def limpar_tela_saida_material():
+    entry_id_pedido.delete(0, tk.END)
+    entry_id_estoque.delete(0, tk.END)
+    entry_quantidade_consumo.delete(0, tk.END)
+
+
+def limpar_tela_pagamento_folha():
+    entry_id_funcionario.delete(0, tk.END)
+    entry_calculo.delete(0, tk.END)
+
+
+def limpar_tela_update_cliente():
+    entry_nomeup.delete(0, tk.END)
+    entry_nascimentoup.delete(0, tk.END)
+    entry_cnpjup.delete(0, tk.END)
+    entry_emailup.delete(0, tk.END)
+    entry_ruaup.delete(0, tk.END)
+    entry_numeroup.delete(0, tk.END)
+    entry_bairroup.delete(0, tk.END)
+    entry_cidadeup.delete(0, tk.END)
+    entry_estadoup.delete(0, tk.END)
+    entry_dddup.delete(0, tk.END)
+    entry_telefoneup.delete(0, tk.END)
+    entry_cpfup.delete(0, tk.END)
+
+
+def limpar_tela_update_funcionario():
+    entry_nomeup.delete(0, tk.END)
+    entry_pisup.delete(0, tk.END)
+    entry_ruaup.delete(0, tk.END)
+    entry_nup.delete(0, tk.END)
+    entry_bairroup.delete(0, tk.END)
+    entry_cidadeup.delete(0, tk.END)
+    entry_estadoup.delete(0, tk.END)
+    entry_dddup.delete(0, tk.END)
+    entry_telefoneup.delete(0, tk.END)
+    entry_idcargo.delete(0, tk.END)
+    entry_status.delete(0, tk.END)
+    entry_idsalario.delete(0, tk.END)
+    entry_cpfup1.delete(0, tk.END)
+
+
+def limpar_tela_update_area():
+    entry_id_estado.delete(0, tk.END)
+    entry_idvendedor.delete(0, tk.END)
+
+
+def limpar_tela_update_produto():
+    entry_nomepro.delete(0, tk.END)
+    entry_desc_pro.delete(0, tk.END)
+    entry_cor_pro.delete(0, tk.END)
+    entry_turbo_pro.delete(0, tk.END)
+    entry_portas_pro.delete(0, tk.END)
+    entry_preco_pro.delete(0, tk.END)
+    entry_idproduto.delete(0, tk.END)
+
+
+def limpar_tela_update_meta():
+    entry_metaa.delete(0, tk.END)
+    entry_datam.delete(0, tk.END)
+    entry_idmeta.delete(0, tk.END)
+
+
+def limpar_tela_tela_fornecedor():
+    entry_nomefor.delete(0, tk.END)
+    entry_tipofor.delete(0, tk.END)
+    entry_cnpjfor.delete(0, tk.END)
+    entry_dddforn.delete(0, tk.END)
+    entry_telefoneforn.delete(0, tk.END)
+    entry_emailforn.delete(0, tk.END)
+    entry_nforn.delete(0, tk.END)
+    entry_ruaforn.delete(0, tk.END)
+    entry_bairroforn.delete(0, tk.END)
+    entry_cidadeforn.delete(0, tk.END)
+    entry_estadoforn.delete(0, tk.END)
+    entry_situacaoforn.delete(0, tk.END)
+    entry_idfornecedorn.delete(0, tk.END)
+
+
+def limpar_tela_update_estoque():
+    entry_id_fornecedor_estoque.delete(0, tk.END)
+    entry_loteest.delete(0, tk.END)
+    entry_nomeest.delete(0, tk.END)
+    entry_tipoest.delete(0, tk.END)
+    entry_corest.delete(0, tk.END)
+    entry_tamanhoest.delete(0, tk.END)
+    entry_qtdest.delete(0, tk.END)
+    entry_dataest.delete(0, tk.END)
+    entry_idestoque.delete(0, tk.END)
+
+
+def limpar_tela_cadastro_login():
+    entry_login.delete(0, tk.END)
+    entry_senha.delete(0, tk.END)
+
+
+janela.mainloop()
