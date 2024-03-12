@@ -1,0 +1,13 @@
+# ################################## janela principal ###################################################
+
+janela = tk.Tk()
+janela.title('FABRICAR LTDA')
+# janela.geometry('700x500') # se eu conseguir deixar o logo da empresa eu aumento o tamanho
+
+# criar o espaco para as abas
+notebook = ttk.Notebook(janela)
+notebook.grid(row=0, column=0, columnspan=3, rowspan=4, padx=10, pady=10)
+
+# estilo
+style = ttk.Style()
+style.configure('EstiloEntry.TEntry', width=100)
