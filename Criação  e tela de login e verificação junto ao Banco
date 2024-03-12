@@ -1,0 +1,122 @@
+# ################################################ CRIAÇÃO DE LOGIN E VERIFICAÇÃO ######################################
+
+
+def criar_janela_login():
+    notebook.hide(aba_funcionario)
+    notebook.hide(aba_administrativo)
+    notebook.hide(aba_comercial)
+    notebook.hide(aba_cliente)
+
+    def validar_login(usuario, senha):
+        try:
+            conn = conectar_banco()
+            if conn:
+                cursor = conn.cursor()
+
+                hashed_senha = hashlib.sha256(senha.encode()).hexdigest()
+                cursor.execute("SELECT 1 FROM USUARIOS WHERE LOGIN = ? AND SENHA = ?", (usuario.lower(), hashed_senha))
+
+                # Verifica se o resultado da consulta é não nulo
+                result = cursor.fetchone()
+                cursor.close()
+                conn.commit()  # Confirma as alterações no banco de dados
+
+                return result is not None
+        except pyodbc.Error as erro:
+            messagebox.showerror('ERRO', f'Não foi possível se conectar')
+
+    def fazer_login():
+        usuario = usuario_entry.get()
+        senha = senha_entry.get()
+
+        if usuario and senha:
+            if validar_login(usuario, senha):
+                messagebox.showinfo("Sucesso", "Login bem-sucedido.")
+                login_window.withdraw()  # Oculta a janela de login
+                notebook.add(aba_funcionario)
+                notebook.add(aba_administrativo)
+                notebook.add(aba_comercial)
+                notebook.add(aba_cliente)
+            else:
+                messagebox.showwarning("Aviso", "Usuário ou senha incorretos.")
+        else:
+            messagebox.showwarning("Aviso", "Por favor, preencha todos os campos.")
+
+    # Criação da janela principal
+    root = tk.Tk()
+    root.withdraw()
+
+    # Estilo para o frame (cores e fontes)
+    style = ttk.Style()
+    style.configure('TLabel', background='#3498db', font=('Helvetica', 12))
+    style.configure('TButton', background='#2ecc71', font=('Helvetica', 12))
+
+    # Criação da janela de login
+    login_window = tk.Toplevel()
+    login_window.title("Login")
+    login_window.geometry("700x400")  # Defina o tamanho desejado
+
+    # Adicione um frame para conter os widgets com uma cor de fundo diferente
+    frame = ttk.Frame(login_window, style='TFrame')
+    frame.place(relwidth=0.8, relheight=0.8, relx=0.1, rely=0.1)
+
+    # Adicione uma entrada de usuário
+    ttk.Label(frame, text="Usuário:").pack(pady=10)
+    usuario_entry = ttk.Entry(frame)
+    usuario_entry.pack(pady=10)
+
+    # Adicione uma entrada de senha
+    ttk.Label(frame, text="Senha:").pack(pady=10)
+    senha_entry = ttk.Entry(frame, show="*")
+    senha_entry.pack(pady=10)
+
+    # Adiciona botão para fazer login
+    login_button = ttk.Button(frame, text="Login", command=fazer_login)
+    login_button.pack(pady=20)
+
+    # Mostrar a janela de login
+    login_window.mainloop()
+
+
+entry_login = entry_senha = None
+
+
+def criar_janela_cadastro_senhageral():
+
+    global entry_login, entry_senha
+
+    janelalogin = tk.Tk()
+    janelalogin.title('Cadastro de Login')
+    janelalogin.geometry('300x170')
+
+    label_login = tk.Label(janelalogin, text='Nome de Usuário:')
+    label_login.grid(row=0, column=1, padx=10, pady=10)
+    entry_login = ttk.Entry(janelalogin, style='EstiloEntry.TEntry', width=20)
+    entry_login.grid(row=0, column=2, padx=10, pady=10)
+
+    label_senha = tk.Label(janelalogin, text='Senha:')
+    label_senha.grid(row=1, column=1, padx=10, pady=10)
+    entry_senha = ttk.Entry(janelalogin, style='EstiloEntry.TEntry', width=20)
+    entry_senha.grid(row=1, column=2, padx=10, pady=10)
+
+    botao_inserir_login = tk.Button(janelalogin, text='Cadastrar Login', bg='blue', fg='white', bd=5, font=('Helvetica', 8, 'bold'), command=lambda: cadastrar_senhageral(entry_login.get(), entry_senha.get()))
+    botao_inserir_login.grid(row=2, column=1, padx=10, pady=10)
+
+
+def cadastrar_senhageral(usuario, senha):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        if not usuario or not senha:
+            messagebox.showwarning('Campos Vazios', 'Por Favor, Preencha todos os campos')
+            return
+
+        else:
+            hashed_senha = hashlib.sha256(senha.encode()).hexdigest()
+            cursor.execute('''INSERT INTO usuarios (LOGIN, SENHA) VALUES (?, ?)''', usuario.lower(), hashed_senha)
+            conn.commit()
+            messagebox.showinfo('Sucesso', 'Usuário Cadastrado com sucesso!')
+            limpar_tela_cadastro_login()
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possivel inseridos os dados! {erro}')
