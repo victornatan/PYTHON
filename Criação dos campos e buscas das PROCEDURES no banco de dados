@@ -1,0 +1,445 @@
+# ########################################### PROCEDURE ################################################################
+
+def cadastro_nf():
+    janelaconsumo = tk.Tk()
+    janelaconsumo.title('NF')
+    janelaconsumo.geometry('300x100')
+
+    label_id_pedido = tk.Label(janelaconsumo, text='ID PEDIDO:')
+    label_id_pedido.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_pedido = ttk.Entry(janelaconsumo)
+    entry_id_pedido.grid(row=0, column=1, padx=10, pady=10)
+
+    botao_saida_material = tk.Button(janelaconsumo, text='Gerar Nota Fiscal', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: inserir_dados_nf(entry_id_pedido.get()))
+    botao_saida_material.grid(row=1, column=0, padx=10, pady=10)
+
+    janelaconsumo.mainloop()
+
+
+def inserir_dados_nf(idpedido):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+
+        if not idpedido:
+            messagebox.showwarning('Campos Vazios', 'Por favor, preencha todos os campos!')
+            return
+
+        # Verificando se o pedido existe
+        cursor.execute('''SELECT idpedido FROM PEDIDO WHERE idpedido = ?''', idpedido)
+        resultado = cursor.fetchone()
+        if not resultado:
+            messagebox.showwarning('PEDIDO', 'Pedido não encontrado, verifique e tente novamente!')
+            return
+
+        # Verificando se já existe uma nota fiscal para o pedido
+        cursor.execute('''SELECT id_pedido FROM NF_CLIENTE WHERE ID_PEDIDO = ?''', idpedido)
+        resultado2 = cursor.fetchone()
+        if resultado2:
+            messagebox.showerror('Nota já Gerada', 'Esse pedido já tem uma nota fiscal gerada! Para gerar outra, exclua a nota já gerada!')
+            return
+        else:
+            # Passando o idpedido como parâmetro para o procedimento armazenado
+            cursor.execute('EXEC SP_GERA_NF_CLIENTE ?', (idpedido,))
+            conn.commit()
+            messagebox.showinfo('Sucesso', 'Nota Fiscal foi gerada com sucesso!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível gerar NF {erro}')
+
+
+def criar_janela_exibicao_nf(dados):
+    # Cria a janela
+    janelaexibicao = tk.Tk()
+    janelaexibicao.title('NF')
+    janelaexibicao.geometry('1350x500')
+
+    def exibir_dados_no_treeview(filtro=None):
+        treeview.delete(*treeview.get_children())  # Limpa os dados anteriores
+        dados_filtrados = []
+
+        if filtro is not None:
+            for resultado in dados:
+                valores = resultado.split(', ')
+
+                if str(filtro).upper() == valores[10].upper():
+                    valores_upper = [valor.upper() for valor in valores]
+                    treeview.insert('', 'end', values=valores_upper)
+                    dados_filtrados.append(resultado)
+
+        total_nf_filtro = len(dados_filtrados)
+        label_total_nf['text'] = f'Total de Notas: {total_nf}                     (Com Filtro: {total_nf_filtro})'
+
+        if not dados_filtrados and filtro is not None:
+            label_sem_resultados.pack(side='top', padx=10, pady=5, fill='both')
+        else:
+            label_sem_resultados.pack_forget()  # Esconde a mensagem se houver resultados
+
+    # Caixa de entrada (Entry) para o filtro
+    entry_filtro = tk.Entry(janelaexibicao, width=10)
+    entry_filtro.pack(side='top', pady=5)
+
+    # Botão para acionar a filtragem
+    button_filtrar = tk.Button(janelaexibicao, text='Filtrar Por:  (ID PEDIDO)', bg='black', fg='white', bd=3, font=('Arial', 8, 'bold'), command=lambda: exibir_dados_no_treeview(entry_filtro.get()))
+    button_filtrar.pack(side='top', pady=5)
+
+    # Realiza a consulta COUNT(*) antes de criar a janela
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM NF_CLIENTE')
+    total_nf = cursor.fetchone()[0]
+
+    # Adiciona rótulo para mostrar o total de áreas
+    label_total_nf = tk.Label(janelaexibicao, text=f'Total de Produtos: {total_nf}', font=('Arial', 12, 'bold'))
+    label_total_nf.pack(side='top', padx=10, pady=5)
+
+    # Cria o Treeview com as colunas
+    colunas = ('ID NF', 'EMISSÃO', ' NOME', 'CPF', 'QUANTIDADE', 'CNPJ FABRICANTE', 'CNPJ', 'PREÇO TOTAL', 'PROTOCOLO', 'ID FABRICAÇÃO', 'ID PEDIDO', 'NOME PRODUTO', 'TIPO', 'COR', 'TURBO', 'PORTAS')
+    treeview = ttk.Treeview(janelaexibicao, columns=colunas, show='headings')
+
+    # Configura as colunas com larguras menores
+    larguras = [5, 40, 70, 50, 8, 65, 60, 30, 85, 8, 8, 60, 8, 8, 8, 8]
+    for coluna, largura in zip(colunas, larguras):
+        treeview.heading(coluna, text=coluna)
+        treeview.column(coluna, width=largura, anchor='center')
+
+    # Adiciona o Treeview à janela
+    treeview.pack(expand=True, fill='both')
+
+    # Label para mostrar mensagem quando não houver resultados
+    label_sem_resultados = tk.Label(janelaexibicao, text='', fg='red')
+
+    # Chama a função para exibir os dados no Treeview (sem filtro inicial)
+    exibir_dados_no_treeview()
+
+    janelaexibicao.mainloop()
+
+
+def selecionar_dados_nf():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM NF_CLIENTE''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idnf, data, nome, cpf, quantidade, cnpjf, cnpj, preco, protocolo, idfabricacao, idpedido, nomep, tipo, cor, turbo, portas = linha
+            resultado_str = f'{idnf}, {data}, {nome}, {cpf}, {quantidade}, {cnpjf}, {cnpj}, {round(preco, 2)}, {protocolo}, {idfabricacao}, {idpedido}, {nomep}, {tipo}, {cor}, {turbo}, {portas} ' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_nf(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def criar_janela_exibicao_material_pedido():
+    # Cria a janela
+    janelaexibicao = tk.Tk()
+    janelaexibicao.title('Material Por Pedido')
+    janelaexibicao.geometry('1350x500')
+
+    # Cria o Treeview com as colunas
+    colunas = ('ID FORNECEDOR', 'LOTE', ' NOME', 'TIPO', 'COR', 'TAMANHO', 'DATA DE VALIDADE', 'DATA SAÍDA', 'ID PEDIDO', 'ID ESTOQUE', 'QUANTIDADE')
+    treeview = ttk.Treeview(janelaexibicao, columns=colunas, show='headings')
+
+    # Configura as colunas com larguras menores
+    larguras = [5, 40, 130, 50, 10, 20, 60, 45, 10, 8, 8]
+    for coluna, largura in zip(colunas, larguras):
+        treeview.heading(coluna, text=coluna)
+        treeview.column(coluna, width=largura, anchor='center')
+
+    # Adiciona o Treeview à janela
+    treeview.pack(expand=True, fill='both')
+
+    # Label para mostrar mensagem quando não houver resultados
+    label_sem_resultados = tk.Label(janelaexibicao, text='', fg='red')
+
+    # Campo de entrada para o ID do pedido
+    entry_idpedido = tk.Entry(janelaexibicao, width=40, bg='gray')
+    entry_idpedido.pack(pady=10)
+
+    def selecionar_dados_material_pedido():
+        try:
+            conn = conectar_banco()
+            cursor = conn.cursor()
+
+            # Obtém o valor do campo de entrada
+            idpedido = entry_idpedido.get()
+
+            # Ajuste para lidar com o argumento idpedido opcional
+            if not idpedido:
+                messagebox.showwarning('Campos vazios', 'Preencha todos os dados!')
+                return  # Saia da função se idpedido estiver vazio
+
+                # Executa a consulta
+            cursor.execute('EXEC SP_CONSULTA_MATERIAL ?', idpedido)
+
+            # Obtém os resultados
+            resultados = []
+
+            for linha in cursor.fetchall():
+                idfornecedor, lote, nome, tipo, cor, tamanho, datavalidade, datasaida, id_pedido, idestoque, quantidade = linha
+                resultado_str = f'{idfornecedor}, {lote}, {nome}, {tipo}, {cor}, {tamanho}, {datavalidade}, {datasaida}, {id_pedido}, {idestoque}, {quantidade}'
+                resultados.append(resultado_str)
+
+            # Exibe os resultados no Treeview
+            exibir_dados_no_treeview(resultados)
+
+            # Verifica se há resultados
+            if not resultados:
+                messagebox.showwarning('Vazio', 'Não há resultados para a sua consulta!')
+
+        except pyodbc.Error as erro:
+            messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+    def exibir_dados_no_treeview(dados):
+        treeview.delete(*treeview.get_children())  # Limpa os dados anteriores
+        for resultado in dados:
+            treeview.insert('', 'end', values=resultado.split(', '))
+
+        if not dados:
+            label_sem_resultados.pack(side='top', padx=10, pady=5, fill='both')
+        else:
+            label_sem_resultados.pack_forget()  # Esconde a mensagem se houver resultados
+
+    # Botão para acionar a consulta
+    botao_consultar = tk.Button(janelaexibicao, text='Consultar', bg='black', fg='white', takefocus=False, bd=7, command=selecionar_dados_material_pedido)
+    botao_consultar.pack(pady=10)
+
+    janelaexibicao.mainloop()
+
+
+def criar_janela_exibicao_sp_pagamento():
+    # Cria a janela
+    janelaexibicao = tk.Tk()
+    janelaexibicao.title('Consulta Pagamento por CPF')
+    janelaexibicao.geometry('1000x500')
+
+    # Cria o Treeview com as colunas
+    colunas = ('DATA DE EMISSÃO', 'NOME', ' CPF', 'PIS', 'CARGO', 'DATA DO PAGAMENTO', 'MES DE REFERÊNCIA', 'SALÁRIO BRUTO', 'INSS', 'SALÁRIO LIQUIDO', 'EMPRESA', 'CNPJ')
+    treeview = ttk.Treeview(janelaexibicao, columns=colunas, show='headings')
+
+    # Configura as colunas com larguras menores
+    larguras = [50, 100, 55, 70, 50, 95, 80, 60, 20, 60, 45, 80]
+    for coluna, largura in zip(colunas, larguras):
+        treeview.heading(coluna, text=coluna)
+        treeview.column(coluna, width=largura, anchor='center')
+
+    # Adiciona o Treeview à janela
+    treeview.pack(expand=True, fill='both')
+
+    # Label para mostrar mensagem quando não houver resultados
+    label_sem_resultados = tk.Label(janelaexibicao, text='', fg='red')
+
+    # Campo de entrada para o ID do pedido
+    entry_cpf = tk.Entry(janelaexibicao, width=40, bg='gray')
+    entry_cpf.pack(pady=10)
+
+    def selecionar_dados_sp_pagamento():
+        try:
+            conn = conectar_banco()
+            cursor = conn.cursor()
+
+            # Obtém o valor do campo de entrada
+            idcpf = entry_cpf.get()
+
+            # Ajuste para lidar com o argumento idpedido opcional
+            if not idcpf:
+                messagebox.showwarning('Campos vazios', 'Preencha todos os dados!')
+                return  # Saia da função se idpedido estiver vazio
+
+                # Executa a consulta
+            cursor.execute('exec sp_consulta_pagamento ?',  idcpf)
+
+            # Obtém os resultados
+            resultados = []
+
+            for linha in cursor.fetchall():
+                dataemissao, nome, cpf, pis, cargo, datapagamento, mes, salariobruto, inss, salarioliquido, empresa, cnpj = linha
+                resultado_str = f'{dataemissao}, {nome}, {cpf}, {pis}, {cargo}, {datapagamento}, {mes}, {salariobruto}, {inss}, {salarioliquido}, {empresa}, {cnpj}'
+                resultados.append(resultado_str)
+
+            # Exibe os resultados no Treeview
+            exibir_dados_no_treeview(resultados)
+
+            # Verifica se há resultados
+            if not resultados:
+                messagebox.showwarning('Vazio', 'Não há resultados para a sua consulta!')
+
+        except pyodbc.Error as erro:
+            messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+    def exibir_dados_no_treeview(dados):
+        treeview.delete(*treeview.get_children())  # Limpa os dados anteriores
+        for resultado in dados:
+            treeview.insert('', 'end', values=resultado.split(', '))
+
+        if not dados:
+            label_sem_resultados.pack(side='top', padx=10, pady=5, fill='both')
+        else:
+            label_sem_resultados.pack_forget()  # Esconde a mensagem se houver resultados
+
+    # Botão para acionar a consulta
+    botao_consultar = tk.Button(janelaexibicao, text='Consultar', bg='black', fg='white', takefocus=False, bd=7, command=selecionar_dados_sp_pagamento)
+    botao_consultar.pack(pady=10)
+
+    janelaexibicao.mainloop()
+
+
+def criar_janela_exibicao_info_vendedor():
+    # Cria a janela
+    janelaexibicao = tk.Tk()
+    janelaexibicao.title('Vendedores')
+    janelaexibicao.geometry('600x500')
+
+    # Cria o Treeview com as colunas
+    colunas = ('NOME', 'CPF', ' CIDADE', 'ESTADO', 'DDD', 'TELEFONE', 'ID VENDEDOR')
+    treeview = ttk.Treeview(janelaexibicao, columns=colunas, show='headings')
+
+    # Configura as colunas com larguras menores
+    larguras = [60, 60, 60, 20, 20, 60, 20]
+    for coluna, largura in zip(colunas, larguras):
+        treeview.heading(coluna, text=coluna)
+        treeview.column(coluna, width=largura, anchor='center')
+
+    # Adiciona o Treeview à janela
+    treeview.pack(expand=True, fill='both')
+
+    # Label para mostrar mensagem quando não houver resultados
+    label_sem_resultados = tk.Label(janelaexibicao, text='', fg='red')
+
+    # Campo de entrada para o ID do Vendedor
+    entry_idvendedor = tk.Entry(janelaexibicao, width=40, bg='gray')
+    entry_idvendedor.pack(pady=10)
+
+    def selecionar_dados_info_vendedor():
+        try:
+            conn = conectar_banco()
+            cursor = conn.cursor()
+
+            # Obtém o valor do campo de entrada
+            idvendedor = entry_idvendedor.get()
+
+            # Ajuste para lidar com o argumento idpedido opcional
+            if not idvendedor:
+                messagebox.showwarning('Campos vazios', 'Preencha todos os dados!')
+                return  # Saia da função se idpedido estiver vazio
+
+                # Executa a consulta
+            cursor.execute('EXEC SP_INFO_VENDEDOR ?', idvendedor)
+
+            # Obtém os resultados
+            resultados = []
+
+            for linha in cursor.fetchall():
+                nome, cpf, cidade, estado, ddd, telefone, idvendedor = linha
+                resultado_str = f'{nome}, {cpf}, {cidade}, {estado}, {ddd}, {telefone}, {idvendedor}'
+                resultados.append(resultado_str)
+
+            # Exibe os resultados no Treeview
+            exibir_dados_no_treeview(resultados)
+
+            # Verifica se há resultados
+            if not resultados:
+                messagebox.showwarning('Vazio', 'Não há resultados para a sua consulta!')
+
+        except pyodbc.Error as erro:
+            messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+    def exibir_dados_no_treeview(dados):
+        treeview.delete(*treeview.get_children())  # Limpa os dados anteriores
+        for resultado in dados:
+            treeview.insert('', 'end', values=resultado.split(', '))
+
+        if not dados:
+            label_sem_resultados.pack(side='top', padx=10, pady=5, fill='both')
+        else:
+            label_sem_resultados.pack_forget()  # Esconde a mensagem se houver resultados
+
+    # Botão para acionar a consulta
+    botao_consultar = tk.Button(janelaexibicao, text='Consultar', bg='black', fg='white', takefocus=False, bd=7, command=selecionar_dados_info_vendedor)
+    botao_consultar.pack(pady=10)
+
+    janelaexibicao.mainloop()
+
+
+def criar_janela_exibicao_status_pedido():
+    # Cria a janela
+    janelaexibicao = tk.Tk()
+    janelaexibicao.title('Status Pedido')
+    janelaexibicao.geometry('800x500')
+
+    # Cria o Treeview com as colunas
+    colunas = ('NOME', 'CPF', ' CNPJ', 'PRODUTO', 'ID PEDIDO', 'DATA DE EMISSÃO', 'DATA DE ENTREGA', 'PREÇO TOTAL', 'ID VENDEDOR', 'STATUS')
+    treeview = ttk.Treeview(janelaexibicao, columns=colunas, show='headings')
+
+    # Configura as colunas com larguras menores
+    larguras = [60, 60, 90, 80, 20, 60, 60, 60, 20, 40]
+    for coluna, largura in zip(colunas, larguras):
+        treeview.heading(coluna, text=coluna)
+        treeview.column(coluna, width=largura, anchor='center')
+
+    # Adiciona o Treeview à janela
+    treeview.pack(expand=True, fill='both')
+
+    # Label para mostrar mensagem quando não houver resultados
+    label_sem_resultados = tk.Label(janelaexibicao, text='', fg='red')
+
+    # Campo de entrada para o ID do Vendedor
+    entry_idvendedor = tk.Entry(janelaexibicao, width=40, bg='gray')
+    entry_idvendedor.pack(pady=10)
+
+    def selecionar_dados_status_pedido():
+        try:
+            conn = conectar_banco()
+            cursor = conn.cursor()
+
+            # Obtém o valor do campo de entrada
+            consulta = entry_idvendedor.get()
+
+            # Ajuste para lidar com o argumento idpedido opcional
+            if not consulta:
+                messagebox.showwarning('Campos vazios', 'Preencha todos os dados!')
+                return  # Saia da função se idpedido estiver vazio
+
+            # Executa a consulta
+            cursor.execute('EXEC SP_CONSULTA_STATUS_PEDIDO ?, ?', consulta, consulta)
+
+            # Obtém os resultados
+            resultados = []
+
+            for linha in cursor.fetchall():
+                nome, cpf, cnpj, produto, idpedido, dataemissao, dataentrega, precototal, idvendedor, status = linha
+                resultado_str = f'{nome}, {cpf}, {cnpj}, {produto}, {idpedido}, {dataemissao}, {dataentrega}, {precototal}, {idvendedor}, {status}'
+                resultados.append(resultado_str)
+
+            # Exibe os resultados no Treeview
+            exibir_dados_no_treeview(resultados)
+
+            # Verifica se há resultados
+            if not resultados:
+                messagebox.showwarning('Vazio', 'Não há resultados para a sua consulta!')
+
+        except pyodbc.Error as erro:
+            messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+        finally:
+            # Certifique-se de fechar a conexão e o cursor, mesmo em caso de erro
+            cursor.close()
+            conn.close()
+
+    def exibir_dados_no_treeview(dados):
+        treeview.delete(*treeview.get_children())  # Limpa os dados anteriores
+        for resultado in dados:
+            treeview.insert('', 'end', values=resultado.split(', '))
+
+        if not dados:
+            label_sem_resultados.pack(side='top', padx=10, pady=5, fill='both')
+        else:
+            label_sem_resultados.pack_forget()  # Esconde a mensagem se houver resultados
+
+    # Botão para acionar a consulta
+    botao_consultar = tk.Button(janelaexibicao, text='Consultar', bg='black', fg='white', takefocus=False, bd=7, command=selecionar_dados_status_pedido)
+    botao_consultar.pack(pady=10)
+
+    janelaexibicao.mainloop()
