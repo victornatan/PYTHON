@@ -1,0 +1,833 @@
+# ###################################### ATUALIZAÇAO DE DADOS ###########################################################
+
+entry_nomeup = entry_nascimentoup = entry_cnpjup = entry_emailup = entry_ruaup = entry_numeroup = None
+entry_bairroup = entry_cidadeup = entry_estadoup = entry_dddup = entry_telefoneup = entry_cpfup = None
+
+
+def update_cliente():
+
+    global entry_nomeup, entry_nascimentoup, entry_cnpjup, entry_emailup, entry_ruaup, entry_numeroup
+    global entry_bairroup, entry_cidadeup, entry_estadoup, entry_dddup, entry_telefoneup, entry_cpfup
+
+    janelaupdatecliente = tk.Tk()
+    janelaupdatecliente.title('Atualizar Cliente')
+    janelaupdatecliente.geometry('400x600')
+
+    label_nomeup = tk.Label(janelaupdatecliente, text='NOME:')
+    label_nomeup.grid(row=0, column=0, padx=10, pady=10)
+    entry_nomeup = ttk.Entry(janelaupdatecliente)
+    entry_nomeup.grid(row=0, column=1, padx=10, pady=10)
+
+    label_nascimentoup = tk.Label(janelaupdatecliente, text='DATA DE NASCIMENTO:')
+    label_nascimentoup.grid(row=1, column=0, padx=10, pady=10)
+    entry_nascimentoup = ttk.Entry(janelaupdatecliente)
+    entry_nascimentoup.grid(row=1, column=1, padx=10, pady=10)
+
+    label_cnpjup = tk.Label(janelaupdatecliente, text='CNPJ:')
+    label_cnpjup.grid(row=2, column=0, padx=10, pady=10)
+    entry_cnpjup = ttk.Entry(janelaupdatecliente)
+    entry_cnpjup.grid(row=2, column=1, padx=10, pady=10)
+
+    label_emailup = tk.Label(janelaupdatecliente, text='E-MAIL:')
+    label_emailup.grid(row=3, column=0, padx=10, pady=10)
+    entry_emailup = ttk.Entry(janelaupdatecliente)
+    entry_emailup.grid(row=3, column=1, padx=10, pady=10)
+
+    label_ruaup = tk.Label(janelaupdatecliente, text='RUA:')
+    label_ruaup.grid(row=4, column=0, padx=10, pady=10)
+    entry_ruaup = ttk.Entry(janelaupdatecliente)
+    entry_ruaup.grid(row=4, column=1, padx=10, pady=10)
+
+    label_numeroup = tk.Label(janelaupdatecliente, text='NUMERO:')
+    label_numeroup.grid(row=5, column=0, padx=10, pady=10)
+    entry_numeroup = ttk.Entry(janelaupdatecliente)
+    entry_numeroup.grid(row=5, column=1, padx=10, pady=10)
+
+    label_bairroup = tk.Label(janelaupdatecliente, text='BAIRRO:')
+    label_bairroup.grid(row=6, column=0, padx=10, pady=10)
+    entry_bairroup = ttk.Entry(janelaupdatecliente)
+    entry_bairroup.grid(row=6, column=1, padx=10, pady=10)
+
+    label_cidadeup = tk.Label(janelaupdatecliente, text='CIDADE:')
+    label_cidadeup.grid(row=7, column=0, padx=10, pady=10)
+    entry_cidadeup = ttk.Entry(janelaupdatecliente)
+    entry_cidadeup.grid(row=7, column=1, padx=10, pady=10)
+
+    label_estadoup = tk.Label(janelaupdatecliente, text='ESTADO:')
+    label_estadoup.grid(row=8, column=0, padx=10, pady=10)
+    entry_estadoup = ttk.Entry(janelaupdatecliente)
+    entry_estadoup.grid(row=8, column=1, padx=10, pady=10)
+
+    label_dddup = tk.Label(janelaupdatecliente, text='DDD:')
+    label_dddup.grid(row=9, column=0, padx=10, pady=10)
+    entry_dddup = ttk.Entry(janelaupdatecliente)
+    entry_dddup.grid(row=9, column=1, padx=10, pady=10)
+
+    label_telefoneup = tk.Label(janelaupdatecliente, text='TELEFONE:')
+    label_telefoneup.grid(row=10, column=0, padx=10, pady=10)
+    entry_telefoneup = ttk.Entry(janelaupdatecliente)
+    entry_telefoneup.grid(row=10, column=1, padx=10, pady=10)
+
+    label_cpfup = tk.Label(janelaupdatecliente, text='PARAMETRO CPF:', bg='green', fg='white')
+    label_cpfup.grid(row=11, column=0, padx=10, pady=10)
+    entry_cpfup = ttk.Entry(janelaupdatecliente)
+    entry_cpfup.grid(row=11, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdatecliente, text='*')
+    desc_cpfup.grid(row=11, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdatecliente, text='Atualizar Cadastro', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_clientes(entry_nomeup.get(), entry_nascimentoup.get(), entry_cnpjup.get(), entry_emailup.get(), entry_ruaup.get(), entry_numeroup.get(), entry_bairroup.get(), entry_cidadeup.get(), entry_estadoup.get(), entry_dddup.get(), entry_telefoneup.get(), entry_cpfup.get()))
+    botao_saida_material.grid(row=12, column=1, padx=10, pady=10)
+
+    janelaupdatecliente.mainloop()
+
+
+def update_clientes(nome, data_de_nascimento, cnpj, email, rua, numero, bairro, cidade, estado, ddd, telefone, cpf):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if cpf:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM CLIENTE WHERE CPF = ?''', cpf)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('CPF não encontrado, verifique e tente novamente!')
+            if nome:
+                cursor.execute('''UPDATE CLIENTE SET NOME = ? WHERE CPF = ? ''', (nome.upper(), cpf)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if data_de_nascimento:
+                cursor.execute('''UPDATE CLIENTE SET DATA_DE_NASCIMENTO = ? WHERE CPF = ? ''', (data_de_nascimento, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if cnpj:
+                cursor.execute('''UPDATE CLIENTE SET CNPJ = ? WHERE CPF = ? ''', (cnpj, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if email:
+                cursor.execute('''UPDATE CLIENTE SET EMAIL = ? WHERE CPF = ? ''', (email, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if rua:
+                cursor.execute('''UPDATE CLIENTE SET RUA = ? WHERE CPF = ? ''', (rua.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if numero:
+                cursor.execute('''UPDATE CLIENTE SET NUMERO = ? WHERE CPF = ? ''', (numero, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if bairro:
+                cursor.execute('''UPDATE CLIENTE SET BAIRRO = ? WHERE CPF = ? ''', (bairro.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if cidade:
+                cursor.execute('''UPDATE CLIENTE SET CIDADE = ? WHERE CPF = ? ''', (cidade.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if estado:
+                cursor.execute('''UPDATE CLIENTE SET ESTADO = ? WHERE CPF = ? ''', (estado.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if ddd:
+                cursor.execute('''UPDATE CLIENTE SET DDD = ? WHERE CPF = ? ''', (ddd, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+            if telefone:
+                cursor.execute('''UPDATE CLIENTE SET TELEFONE = ? WHERE CPF = ? ''', (telefone, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_cliente()
+        else:
+            messagebox.showinfo('CPF', 'O PARAMETRO CPF não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_nomeup = entry_pisup = entry_ruaup = entry_nup = entry_bairroup = entry_cidadeup = entry_estadoup = None
+entry_dddup = entry_telefoneup = entry_idcargo = entry_status = entry_idsalario = entry_cpfup1 = None
+
+
+def update_funcionario():
+
+    global entry_nomeup, entry_pisup, entry_ruaup, entry_nup, entry_bairroup, entry_cidadeup, entry_estadoup
+    global entry_dddup, entry_telefoneup, entry_idcargo, entry_status, entry_idsalario, entry_cpfup1
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Funcionario')
+    janelaupdate.geometry('400x600')
+
+    label_nomeup = tk.Label(janelaupdate, text='NOME:')
+    label_nomeup.grid(row=0, column=0, padx=10, pady=10)
+    entry_nomeup = ttk.Entry(janelaupdate)
+    entry_nomeup.grid(row=0, column=1, padx=10, pady=10)
+
+    label_pisup = tk.Label(janelaupdate, text='PIS:')
+    label_pisup.grid(row=1, column=0, padx=10, pady=10)
+    entry_pisup = ttk.Entry(janelaupdate)
+    entry_pisup.grid(row=1, column=1, padx=10, pady=10)
+
+    label_ruaup = tk.Label(janelaupdate, text='RUA:')
+    label_ruaup.grid(row=2, column=0, padx=10, pady=10)
+    entry_ruaup = ttk.Entry(janelaupdate)
+    entry_ruaup.grid(row=2, column=1, padx=10, pady=10)
+
+    label_nup = tk.Label(janelaupdate, text='Nº:')
+    label_nup.grid(row=3, column=0, padx=10, pady=10)
+    entry_nup = ttk.Entry(janelaupdate)
+    entry_nup.grid(row=3, column=1, padx=10, pady=10)
+
+    label_bairroup = tk.Label(janelaupdate, text='BAIRRO:')
+    label_bairroup.grid(row=4, column=0, padx=10, pady=10)
+    entry_bairroup = ttk.Entry(janelaupdate)
+    entry_bairroup.grid(row=4, column=1, padx=10, pady=10)
+
+    label_cidadeup = tk.Label(janelaupdate, text='CIDADE:')
+    label_cidadeup.grid(row=5, column=0, padx=10, pady=10)
+    entry_cidadeup = ttk.Entry(janelaupdate)
+    entry_cidadeup.grid(row=5, column=1, padx=10, pady=10)
+
+    label_estadoup = tk.Label(janelaupdate, text='ESTADO:')
+    label_estadoup.grid(row=6, column=0, padx=10, pady=10)
+    entry_estadoup = ttk.Entry(janelaupdate)
+    entry_estadoup.grid(row=6, column=1, padx=10, pady=10)
+
+    label_dddup = tk.Label(janelaupdate, text='DDD:')
+    label_dddup.grid(row=7, column=0, padx=10, pady=10)
+    entry_dddup = ttk.Entry(janelaupdate)
+    entry_dddup.grid(row=7, column=1, padx=10, pady=10)
+
+    label_telefoneup = tk.Label(janelaupdate, text='TELEFONE:')
+    label_telefoneup.grid(row=8, column=0, padx=10, pady=10)
+    entry_telefoneup = ttk.Entry(janelaupdate)
+    entry_telefoneup.grid(row=8, column=1, padx=10, pady=10)
+
+    label_idcargo = tk.Label(janelaupdate, text='ID CARGO:')
+    label_idcargo.grid(row=9, column=0, padx=10, pady=10)
+    entry_idcargo = ttk.Entry(janelaupdate)
+    entry_idcargo.grid(row=9, column=1, padx=10, pady=10)
+
+    label_status = tk.Label(janelaupdate, text='STATUS:')
+    label_status.grid(row=10, column=0, padx=10, pady=10)
+    entry_status = ttk.Entry(janelaupdate)
+    entry_status.grid(row=10, column=1, padx=10, pady=10)
+
+    label_idsalario = tk.Label(janelaupdate, text='SALÁRIO:')
+    label_idsalario.grid(row=11, column=0, padx=10, pady=10)
+    entry_idsalario = ttk.Entry(janelaupdate)
+    entry_idsalario.grid(row=11, column=1, padx=10, pady=10)
+
+    label_cpfup1 = tk.Label(janelaupdate, text='PARAMETRO CPF:', bg='green', fg='white')
+    label_cpfup1.grid(row=12, column=0, padx=10, pady=10)
+    entry_cpfup1 = ttk.Entry(janelaupdate)
+    entry_cpfup1.grid(row=12, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=12, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Cadastro', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_funcionarios(entry_nomeup.get(), entry_pisup.get(), entry_ruaup.get(), entry_nup.get(), entry_bairroup.get(), entry_cidadeup.get(), entry_estadoup.get(), entry_dddup.get(), entry_telefoneup.get(), entry_idcargo.get(), entry_status.get(), entry_idsalario.get(), entry_cpfup1.get()))
+    botao_saida_material.grid(row=13, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_funcionarios(nome, pis, rua, n, bairro, cidade, estado, ddd, telefone, idcargo, status, salario, cpf):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if cpf:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM FUNCIONARIO WHERE CPF = ?''', cpf)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('CPF', 'CPF não encontrado, verifique e tente novamente!')
+            if nome:
+                cursor.execute('''UPDATE FUNCIONARIO SET NOME = ? WHERE CPF = ? ''', (nome.upper(), cpf)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if pis:
+                cursor.execute('''UPDATE FUNCIONARIO SET PIS = ? WHERE CPF = ? ''', (pis, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if rua:
+                cursor.execute('''UPDATE FUNCIONARIO SET RUA = ? WHERE CPF = ? ''', (rua.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if n:
+                cursor.execute('''UPDATE FUNCIONARIO SET NUMERO = ? WHERE CPF = ? ''', (n, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if bairro:
+                cursor.execute('''UPDATE FUNCIONARIO SET BAIRRO = ? WHERE CPF = ? ''', (bairro.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if cidade:
+                cursor.execute('''UPDATE FUNCIONARIO SET CIDADE = ? WHERE CPF = ? ''', (cidade.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if estado:
+                cursor.execute('''UPDATE FUNCIONARIO SET ESTADO = ? WHERE CPF = ? ''', (estado.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if ddd:
+                cursor.execute('''UPDATE FUNCIONARIO SET DDD = ? WHERE CPF = ? ''', (ddd, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if telefone:
+                cursor.execute('''UPDATE FUNCIONARIO SET TELEFONE = ? WHERE CPF = ? ''', (telefone, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if idcargo:
+                cursor.execute('''UPDATE FUNCIONARIO SET ID_CARGO = ? WHERE CPF = ? ''', (idcargo, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if status:
+                cursor.execute('''UPDATE FUNCIONARIO SET STATUS = ? WHERE CPF = ? ''', (status.upper(), cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+            if salario:
+                cursor.execute('''UPDATE FUNCIONARIO SET SALARIO_BRUTO = ? WHERE CPF = ? ''', (salario, cpf))
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_funcionario()
+        else:
+            messagebox.showinfo('CPF', 'O PARAMETRO CPF não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_id_estado = entry_idvendedor = None
+
+
+def update_area_vendedor():
+
+    global entry_id_estado, entry_idvendedor
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Área Vendedor')
+    janelaupdate.geometry('380x180')
+
+    label_id_estado = tk.Label(janelaupdate, text='ID ESTADO:')
+    label_id_estado.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_estado = ttk.Entry(janelaupdate)
+    entry_id_estado.grid(row=0, column=1, padx=10, pady=10)
+
+    label_idvendedor = tk.Label(janelaupdate, text='PARAMETRO ID VENDEDOR:', bg='green', fg='white')
+    label_idvendedor.grid(row=1, column=0, padx=10, pady=10)
+    entry_idvendedor = ttk.Entry(janelaupdate)
+    entry_idvendedor.grid(row=1, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=1, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Área', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_area_vendedores(entry_id_estado.get(), entry_idvendedor.get()))
+    botao_saida_material.grid(row=13, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_area_vendedores(id_estado, idvendedor):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idvendedor:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM AREA_DE_ATUAÇAO_VENDEDOR WHERE IDVENDEDOR = ?''', idvendedor)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID VENDEDOR', 'O ID VENDEDOR não encontrado, verifique e tente novamente!')
+            if id_estado:
+                cursor.execute('''UPDATE AREA_DE_ATUAÇAO_VENDEDOR SET ID_ESTADO = ? WHERE IDVENDEDOR = ? ''', (id_estado, idvendedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_area()
+        else:
+            messagebox.showinfo('ID VENDEDOR', 'O PARAMETRO ID VENDEDOR não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_nomepro = entry_desc_pro = entry_cor_pro = entry_turbo_pro = entry_portas_pro = entry_preco_pro = entry_idproduto = None
+
+
+def update_produto():
+
+    global entry_nomepro, entry_desc_pro, entry_cor_pro, entry_turbo_pro, entry_portas_pro, entry_preco_pro, entry_idproduto
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Produto')
+    janelaupdate.geometry('400x400')
+
+    label_nomepro = tk.Label(janelaupdate, text='NOME:')
+    label_nomepro.grid(row=0, column=0, padx=10, pady=10)
+    entry_nomepro = ttk.Entry(janelaupdate)
+    entry_nomepro.grid(row=0, column=1, padx=10, pady=10)
+
+    label_desc_pro = tk.Label(janelaupdate, text='DESCRIÇÃO:')
+    label_desc_pro.grid(row=1, column=0, padx=10, pady=10)
+    entry_desc_pro = ttk.Entry(janelaupdate)
+    entry_desc_pro.grid(row=1, column=1, padx=10, pady=10)
+
+    label_cor_pro = tk.Label(janelaupdate, text='COR:')
+    label_cor_pro.grid(row=2, column=0, padx=10, pady=10)
+    entry_cor_pro = ttk.Entry(janelaupdate)
+    entry_cor_pro.grid(row=2, column=1, padx=10, pady=10)
+
+    label_turbo_pro = tk.Label(janelaupdate, text='TURBO:')
+    label_turbo_pro.grid(row=3, column=0, padx=10, pady=10)
+    entry_turbo_pro = ttk.Entry(janelaupdate)
+    entry_turbo_pro.grid(row=3, column=1, padx=10, pady=10)
+
+    label_portas_pro = tk.Label(janelaupdate, text='PORTAS:')
+    label_portas_pro.grid(row=4, column=0, padx=10, pady=10)
+    entry_portas_pro = ttk.Entry(janelaupdate)
+    entry_portas_pro.grid(row=4, column=1, padx=10, pady=10)
+
+    label_preco_pro = tk.Label(janelaupdate, text='PREÇO:')
+    label_preco_pro.grid(row=5, column=0, padx=10, pady=10)
+    entry_preco_pro = ttk.Entry(janelaupdate)
+    entry_preco_pro.grid(row=5, column=1, padx=10, pady=10)
+
+    label_idproduto = tk.Label(janelaupdate, text='PARAMETRO ID PRODUTO:', bg='green', fg='white')
+    label_idproduto.grid(row=6, column=0, padx=10, pady=10)
+    entry_idproduto = ttk.Entry(janelaupdate)
+    entry_idproduto.grid(row=6, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=6, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Produto', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_produtos(entry_nomepro.get(), entry_desc_pro.get(), entry_cor_pro.get(), entry_turbo_pro.get(), entry_portas_pro.get(), entry_preco_pro.get(), entry_idproduto.get()))
+    botao_saida_material.grid(row=7, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_produtos(nome, descricao, cor, turbo, portas, preco, idproduto):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idproduto:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM PRODUTO WHERE IDPRODUTO = ?''', idproduto)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID PRODUTO', ' ID PRODUTO não encontrado, verifique e tente novamente!')
+            if nome:
+                cursor.execute('''UPDATE PRODUTO SET NOME = ? WHERE IDPRODUTO = ? ''', (nome, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+            if descricao:
+                cursor.execute('''UPDATE PRODUTO SET TIPO = ? WHERE IDPRODUTO = ? ''', (descricao, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+            if cor:
+                cursor.execute('''UPDATE PRODUTO SET COR = ? WHERE IDPRODUTO = ? ''', (cor, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+            if turbo:
+                cursor.execute('''UPDATE PRODUTO SET TURBO = ? WHERE IDPRODUTO = ? ''', (turbo, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+            if portas:
+                cursor.execute('''UPDATE PRODUTO SET PORTAS = ? WHERE IDPRODUTO = ? ''', (portas, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+            if preco:
+                cursor.execute('''UPDATE PRODUTO SET PREÇO = ? WHERE IDPRODUTO = ? ''', (preco, idproduto)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_produto()
+        else:
+            messagebox.showinfo('ID PRODUTO', 'O PARAMETRO ID PRODUTO não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_metaa = entry_datam = entry_idmeta = None
+
+
+def update_meta():
+
+    global entry_metaa, entry_datam, entry_idmeta
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Meta')
+    janelaupdate.geometry('380x200')
+
+    label_metaa = tk.Label(janelaupdate, text='VALOR DA META:')
+    label_metaa.grid(row=0, column=0, padx=10, pady=10)
+    entry_metaa = ttk.Entry(janelaupdate)
+    entry_metaa.grid(row=0, column=1, padx=10, pady=10)
+
+    label_datam = tk.Label(janelaupdate, text='DATA FINAL META:')
+    label_datam.grid(row=1, column=0, padx=10, pady=10)
+    entry_datam = ttk.Entry(janelaupdate)
+    entry_datam.grid(row=1, column=1, padx=10, pady=10)
+
+    label_idmeta = tk.Label(janelaupdate, text='PARAMETRO ID META:', bg='green', fg='white')
+    label_idmeta.grid(row=2, column=0, padx=10, pady=10)
+    entry_idmeta = ttk.Entry(janelaupdate)
+    entry_idmeta.grid(row=2, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=2, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Produto', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_metas(entry_metaa.get(), entry_datam.get(), entry_idmeta.get()))
+    botao_saida_material.grid(row=3, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_metas(valormeta, datafinal, idmeta):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idmeta:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM META_VENDEDOR WHERE IDMETA = ?''', idmeta)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID META', 'ID META não encontrado, verifique e tente novamente!')
+            if valormeta:
+                cursor.execute('''UPDATE META_VENDEDOR SET VALOR_META = ? WHERE IDMETA = ? ''', (valormeta, idmeta)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_meta()
+            if datafinal:
+                cursor.execute('''UPDATE META_VENDEDOR SET DATA_FINAL_META = ? WHERE IDMETA = ? ''', (datafinal, idmeta)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_meta()
+        else:
+            messagebox.showinfo('ID META', 'O PARAMETRO ID META não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_nomefor = entry_tipofor = entry_cnpjfor = entry_dddforn = entry_telefoneforn = entry_emailforn = entry_nforn = None
+entry_ruaforn = entry_bairroforn = entry_cidadeforn = entry_estadoforn = entry_situacaoforn = entry_idfornecedorn = None
+
+
+def update_fornecedor():
+
+    global entry_nomefor, entry_tipofor, entry_cnpjfor, entry_dddforn, entry_telefoneforn, entry_emailforn, entry_nforn
+    global entry_ruaforn, entry_bairroforn, entry_cidadeforn, entry_estadoforn, entry_situacaoforn, entry_idfornecedorn
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Fornecedor')
+    janelaupdate.geometry('400x600')
+
+    label_nomefor = tk.Label(janelaupdate, text='NOME:')
+    label_nomefor.grid(row=0, column=0, padx=10, pady=10)
+    entry_nomefor = ttk.Entry(janelaupdate)
+    entry_nomefor.grid(row=0, column=1, padx=10, pady=10)
+
+    label_tipofor = tk.Label(janelaupdate, text='TIPO DE MATERIAL:')
+    label_tipofor.grid(row=1, column=0, padx=10, pady=10)
+    entry_tipofor = ttk.Entry(janelaupdate)
+    entry_tipofor.grid(row=1, column=1, padx=10, pady=10)
+
+    label_cnpjfor = tk.Label(janelaupdate, text='CNPJ:')
+    label_cnpjfor.grid(row=2, column=0, padx=10, pady=10)
+    entry_cnpjfor = ttk.Entry(janelaupdate)
+    entry_cnpjfor.grid(row=2, column=1, padx=10, pady=10)
+
+    label_dddfor = tk.Label(janelaupdate, text='DDD:')
+    label_dddfor.grid(row=3, column=0, padx=10, pady=10)
+    entry_dddforn = ttk.Entry(janelaupdate)
+    entry_dddforn.grid(row=3, column=1, padx=10, pady=10)
+
+    label_telefonefor = tk.Label(janelaupdate, text='TELEFONE:')
+    label_telefonefor.grid(row=4, column=0, padx=10, pady=10)
+    entry_telefoneforn = ttk.Entry(janelaupdate)
+    entry_telefoneforn.grid(row=4, column=1, padx=10, pady=10)
+
+    label_emailfor = tk.Label(janelaupdate, text='E-MAIL:')
+    label_emailfor.grid(row=5, column=0, padx=10, pady=10)
+    entry_emailforn = ttk.Entry(janelaupdate)
+    entry_emailforn.grid(row=5, column=1, padx=10, pady=10)
+
+    label_nfor = tk.Label(janelaupdate, text='Nº:')
+    label_nfor.grid(row=6, column=0, padx=10, pady=10)
+    entry_nforn = ttk.Entry(janelaupdate)
+    entry_nforn.grid(row=6, column=1, padx=10, pady=10)
+
+    label_ruafor = tk.Label(janelaupdate, text='RUA:')
+    label_ruafor.grid(row=7, column=0, padx=10, pady=10)
+    entry_ruaforn = ttk.Entry(janelaupdate)
+    entry_ruaforn.grid(row=7, column=1, padx=10, pady=10)
+
+    label_bairrofor = tk.Label(janelaupdate, text='BAIRRO:')
+    label_bairrofor.grid(row=8, column=0, padx=10, pady=10)
+    entry_bairroforn = ttk.Entry(janelaupdate)
+    entry_bairroforn.grid(row=8, column=1, padx=10, pady=10)
+
+    label_cidadefor = tk.Label(janelaupdate, text='CIDADE:')
+    label_cidadefor.grid(row=9, column=0, padx=10, pady=10)
+    entry_cidadeforn = ttk.Entry(janelaupdate)
+    entry_cidadeforn.grid(row=9, column=1, padx=10, pady=10)
+
+    label_estadofor = tk.Label(janelaupdate, text='ESTADO:')
+    label_estadofor.grid(row=10, column=0, padx=10, pady=10)
+    entry_estadoforn = ttk.Entry(janelaupdate)
+    entry_estadoforn.grid(row=10, column=1, padx=10, pady=10)
+
+    label_situacaofor = tk.Label(janelaupdate, text='SITUAÇÃO:')
+    label_situacaofor.grid(row=11, column=0, padx=10, pady=10)
+    entry_situacaoforn = ttk.Entry(janelaupdate)
+    entry_situacaoforn.grid(row=11, column=1, padx=10, pady=10)
+
+    label_idfornecedor = tk.Label(janelaupdate, text='PARAMETRO ID FORNECEDOR:', bg='green', fg='white')
+    label_idfornecedor.grid(row=12, column=0, padx=10, pady=10)
+    entry_idfornecedorn = ttk.Entry(janelaupdate)
+    entry_idfornecedorn.grid(row=12, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=12, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Fornecedor', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_fornecedores(entry_nomefor.get(), entry_tipofor.get(), entry_cnpjfor.get(), entry_dddforn.get(), entry_telefoneforn.get(), entry_emailforn.get(), entry_nforn.get(), entry_ruaforn.get(), entry_bairroforn.get(), entry_cidadeforn.get(), entry_estadoforn.get(), entry_situacaoforn.get(), entry_idfornecedorn.get()))
+    botao_saida_material.grid(row=13, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_fornecedores(nome, tipo, cnpj, ddd, telefone, email, numero, rua, bairro, cidade, estado, situacao, idfornecedor):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idfornecedor:  # Verifica se o CPF não está vazio
+            cursor.execute('''SELECT 1 FROM FORNECEDOR WHERE IDFORNECEDOR = ?''', idfornecedor)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID FORNECEDOR', 'ID FORNECEDOR não encontrado, verifique e tente novamente!')
+            if nome:
+                cursor.execute('''UPDATE FORNECEDOR SET NOME = ? WHERE IDFORNECEDOR = ? ''', (nome, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if tipo:
+                cursor.execute('''UPDATE FORNECEDOR SET TIPO_DE_MATERIAL = ? WHERE IDFORNECEDOR = ? ''', (tipo, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if cnpj:
+                cursor.execute('''UPDATE FORNECEDOR SET CNPJ = ? WHERE IDFORNECEDOR = ? ''', (cnpj, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if ddd:
+                cursor.execute('''UPDATE FORNECEDOR SET DDD = ? WHERE IDFORNECEDOR = ? ''', (ddd, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if telefone:
+                cursor.execute('''UPDATE FORNECEDOR SET TELEFONE = ? WHERE IDFORNECEDOR = ? ''', (telefone, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if email:
+                cursor.execute('''UPDATE FORNECEDOR SET EMAIL = ? WHERE IDFORNECEDOR = ? ''', (email, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if numero:
+                cursor.execute('''UPDATE FORNECEDOR SET NUMERO = ? WHERE IDFORNECEDOR = ? ''', (numero, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if rua:
+                cursor.execute('''UPDATE FORNECEDOR SET RUA = ? WHERE IDFORNECEDOR = ? ''', (rua, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if bairro:
+                cursor.execute('''UPDATE FORNECEDOR SET BAIRRO = ? WHERE IDFORNECEDOR = ? ''', (bairro, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if cidade:
+                cursor.execute('''UPDATE FORNECEDOR SET CIDADE = ? WHERE IDFORNECEDOR = ? ''', (cidade, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if estado:
+                cursor.execute('''UPDATE FORNECEDOR SET ESTADO = ? WHERE IDFORNECEDOR = ? ''', (estado, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+            if situacao:
+                cursor.execute('''UPDATE FORNECEDOR SET SITUAÇAO = ? WHERE IDFORNECEDOR = ? ''', (situacao, idfornecedor)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_tela_fornecedor()
+        else:
+            messagebox.showinfo('ID FORNECEDOR', 'O PARAMETRO ID FORNECEDOR não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
+
+
+entry_id_fornecedor_estoque = entry_loteest =  entry_nomeest =  entry_tipoest =  entry_corest = entry_tamanhoest = None
+entry_qtdest = entry_dataest = entry_idestoque = None
+
+
+def update_estoque():
+
+    global entry_id_fornecedor_estoque, entry_loteest, entry_nomeest, entry_tipoest, entry_corest, entry_tamanhoest
+    global entry_qtdest, entry_dataest, entry_idestoque
+
+    janelaupdate = tk.Tk()
+    janelaupdate.title('Atualizar Estoque')
+    janelaupdate.geometry('400x450')
+
+    label_id_fornecedor_estoque = tk.Label(janelaupdate, text='ID FORNECEDOR:')
+    label_id_fornecedor_estoque.grid(row=0, column=0, padx=10, pady=10)
+    entry_id_fornecedor_estoque = ttk.Entry(janelaupdate)
+    entry_id_fornecedor_estoque.grid(row=0, column=1, padx=10, pady=10)
+
+    label_loteest = tk.Label(janelaupdate, text='LOTE:')
+    label_loteest.grid(row=1, column=0, padx=10, pady=10)
+    entry_loteest = ttk.Entry(janelaupdate)
+    entry_loteest.grid(row=1, column=1, padx=10, pady=10)
+
+    label_nomeest = tk.Label(janelaupdate, text='NOME:')
+    label_nomeest.grid(row=2, column=0, padx=10, pady=10)
+    entry_nomeest = ttk.Entry(janelaupdate)
+    entry_nomeest.grid(row=2, column=1, padx=10, pady=10)
+
+    label_tipoest = tk.Label(janelaupdate, text='TIPO:')
+    label_tipoest.grid(row=3, column=0, padx=10, pady=10)
+    entry_tipoest = ttk.Entry(janelaupdate)
+    entry_tipoest.grid(row=3, column=1, padx=10, pady=10)
+
+    label_corest = tk.Label(janelaupdate, text='COR:')
+    label_corest.grid(row=4, column=0, padx=10, pady=10)
+    entry_corest = ttk.Entry(janelaupdate)
+    entry_corest.grid(row=4, column=1, padx=10, pady=10)
+
+    label_tamanhoest = tk.Label(janelaupdate, text='TAMANHO:')
+    label_tamanhoest.grid(row=5, column=0, padx=10, pady=10)
+    entry_tamanhoest = ttk.Entry(janelaupdate)
+    entry_tamanhoest.grid(row=5, column=1, padx=10, pady=10)
+
+    label_qtdest = tk.Label(janelaupdate, text='QUANTIDADE:')
+    label_qtdest.grid(row=6, column=0, padx=10, pady=10)
+    entry_qtdest = ttk.Entry(janelaupdate)
+    entry_qtdest.grid(row=6, column=1, padx=10, pady=10)
+
+    label_dataest = tk.Label(janelaupdate, text='DATA DE VALIDADE:')
+    label_dataest.grid(row=7, column=0, padx=10, pady=10)
+    entry_dataest = ttk.Entry(janelaupdate)
+    entry_dataest.grid(row=7, column=1, padx=10, pady=10)
+
+    label_idestoque = tk.Label(janelaupdate, text='PARAMETRO ID ESTOQUE:', bg='green', fg='white')
+    label_idestoque.grid(row=8, column=0, padx=10, pady=10)
+    entry_idestoque = ttk.Entry(janelaupdate)
+    entry_idestoque.grid(row=8, column=1, padx=10, pady=10)
+
+    desc_cpfup = tk.Label(janelaupdate, text='*')
+    desc_cpfup.grid(row=8, column=2, sticky="w")
+
+    botao_saida_material = tk.Button(janelaupdate, text='Atualizar Estoque', bg='blue', fg='white', bd=3, takefocus=False, font=('Helvetica', 10, 'bold'), command=lambda: update_estoques(entry_id_fornecedor_estoque.get(), entry_loteest.get(), entry_nomeest.get(), entry_tipoest.get(), entry_corest.get(), entry_tamanhoest.get(), entry_qtdest.get(), entry_dataest.get(), entry_idestoque.get()))
+    botao_saida_material.grid(row=9, column=1, padx=10, pady=10)
+
+    janelaupdate.mainloop()
+
+
+def update_estoques(id_fornecedor, lote, nome, tipo, cor, tamanho, quantidade, datavalidade, idestoque):
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        if idestoque or id_fornecedor:
+            cursor.execute('''SELECT 1 FROM ESTOQUE_DE_MATERIAL WHERE IDESTOQUE = ?''', idestoque)
+            resultado = cursor.fetchone()
+            if not resultado:
+                return messagebox.showwarning('ID ESTOQUE', 'ID ESTOQUE não encontrado, verifique e tente novamente!')
+            cursor.execute('''SELECT 1 FROM FORNECEDOR WHERE IDFORNECEDOR = ?''', id_fornecedor)
+            resultado2 = cursor.fetchone()
+            if not resultado2:
+                return messagebox.showwarning('ID FORNECEDOR', 'ID FORNECEDOR não encontrado, verifique e tente novamente!')
+            else:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET ID_FORNECEDOR = ? WHERE IDESTOQUE = ? ''', (id_fornecedor, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if lote:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET LOTE = ? WHERE IDESTOQUE = ? ''', (lote, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if nome:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET NOME = ? WHERE IDESTOQUE = ? ''', (nome, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if tipo:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET TIPO = ? WHERE IDESTOQUE = ? ''', (tipo, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if cor:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET COR = ? WHERE IDESTOQUE = ? ''', (cor, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if tamanho:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET TAMANHO = ? WHERE IDESTOQUE = ? ''', (tamanho, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if quantidade:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET QUANTIDADE = ? WHERE IDESTOQUE = ? ''', (quantidade, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+            if datavalidade:
+                cursor.execute('''UPDATE ESTOQUE_DE_MATERIAL SET DATA_DE_VALIDADE = ? WHERE IDESTOQUE = ? ''', (datavalidade, idestoque)) # O ERRO ESTA EM NAO COLOCAR ()) NOS PARAMETROS
+                conn.commit()
+                messagebox.showinfo('Sucesso', 'Atualização realizada!')
+                limpar_tela_update_estoque()
+        else:
+            messagebox.showinfo('ID ESTOQUE', 'O PARAMETRO ID ESTOQUE não pode ficar vazio!')
+    except pyodbc.Error as erro:
+        return messagebox.showerror('Erro', f'Não foi possível Atualizar! {erro}')
+    finally:
+        cursor.close()
+        conn.close()
