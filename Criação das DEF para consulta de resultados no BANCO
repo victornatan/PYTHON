@@ -1,0 +1,266 @@
+# ########################################### SELEÇÃO DOS DADOS NO BANCO DE DADOS ######################################
+
+def selecionar_dados_funcionario():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM FUNCIONARIO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idfuncionario, data_de_admissao, nome, cpf, pis, rua, numero, bairro, cidade, estado, ddd, telefone, sexo, idcargo, status, salario_bruto, salario_bruto_com_comissao = linha
+            resultado_str = f'{idfuncionario}, {data_de_admissao}, {nome}, {cpf}, {pis}, {rua}, {numero}, {bairro}, {cidade}, {estado}, {ddd}, {telefone}, {sexo}, {idcargo}, {status}, {round(salario_bruto, 2)}, {round(salario_bruto_com_comissao, 2)}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_funcionario(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_cliente():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT IDCLIENTE, DATA, NOME, DATA_DE_NASCIMENTO, CPF, CNPJ, EMAIL, RUA, NUMERO, BAIRRO, CIDADE, ESTADO, DDD, TELEFONE FROM CLIENTE''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idcliente, data, nome, data_de_nascimento, cpf, cnpj, email, rua, numero, bairro, cidade, estado, ddd, telefone = linha
+            resultado_str = f'{idcliente}, {nome}, {data_de_nascimento}, {cpf}, {cnpj}, {email}, {rua}, {numero}, {bairro}, {cidade}, {estado}, {ddd}, {telefone}'
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_cliente(resultados)# ao clicar no botao, ele vai executar o select a estou associando o resultado a def pra criar a janela
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_cargo():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM CARGO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idcargo, nome = linha
+            resultado_str = f'{idcargo}, {nome}'
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_cargo(resultados)
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_estado():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM ESTADO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idestado, uf = linha
+            resultado_str = f'{idestado}, {uf}'
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_estado(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_area():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM AREA_DE_ATUAÇAO_VENDEDOR''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idvendedor, idfuncionario, idestado = linha
+            resultado_str = f'{idvendedor}, {idfuncionario}, {idestado}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_area(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_meta():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM META_VENDEDOR''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idmeta, idvendedor, valor_meta, andamento, datafinal = linha
+            resultado_str = f'{idmeta}, {idvendedor}, {round(valor_meta, 2)}, {round(andamento, 2)}, {datafinal}'
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_meta(resultados)
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_produto():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM PRODUTO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idproduto, nome, tipo, cor, turbo, portas, preco = linha
+            resultado_str = f'{idproduto}, {nome}, {tipo}, {cor}, {turbo}, {portas}, {round(preco, 2)}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_produto(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_fornecedor():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM FORNECEDOR''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idfornecedor, data, nome, tipomaterial, cnpj, ddd, telefone, email, numero, rua, bairro, cidade, estado, situacao = linha
+            resultado_str = f'{idfornecedor}, {data}, {nome}, {tipomaterial}, {cnpj}, {ddd}, {telefone}, {email}, {numero}, {rua}, {bairro}, {cidade}, {estado}, {situacao}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_fornecedor(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_estoque():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM ESTOQUE_DE_MATERIAL''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idestoque, data, id_fornecedor, lote, nome, tipo, cor, tamanho, quantidade, data_de_validade = linha
+            resultado_str = f'{idestoque}, {data}, {id_fornecedor}, {lote}, {nome}, {tipo}, {cor}, {tamanho}, {quantidade}, {data_de_validade}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_estoque(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_pedido():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM PEDIDO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idpedido, datadeemissao, idcliente, idproduto, idvendedor, quantidade, dataentrega, modopagamento, parcelas, precototal = linha
+            resultado_str = f'{idpedido}, {datadeemissao}, {idcliente}, {idproduto}, {idvendedor}, {quantidade}, {dataentrega}, {modopagamento}, {parcelas}, {precototal}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_pedido(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_material_consumo():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM MATERIAL_PRA_CONSUMO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idmaterial, datasaida, idpedido, idestoque, quantidade = linha
+            resultado_str = f'{idmaterial}, {datasaida}, {idpedido}, {idestoque}, {quantidade}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_material_consumo(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_fabricacao():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM PRODUTO_EM_FABRICAÇAO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            id_frabricacao, data, nome, cpf, cnpj, id_pedido, id_vendedor, quantidade, data_de_entrega, nomep, tipo, cor, turbo, portas, status= linha
+            resultado_str = f'{id_frabricacao}, {data}, {nome}, {cpf}, {cnpj}, {id_pedido}, {id_vendedor}, {quantidade}, {data_de_entrega}, {nomep}, {tipo}, {cor}, {turbo}, {portas}, {status}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_fabricacao(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_historico():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM HISTORICO_META''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idhistorico, idvendedor, valormeta, andamento, datafinalmeta = linha
+            resultado_str = f'{idhistorico}, {idvendedor}, {valormeta}, {andamento}, {datafinalmeta} ' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_historico(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
+
+
+def selecionar_dados_folha():
+    try:
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute('''SELECT * FROM FOLHA_DE_PAGAMENTO''')
+        resultados = []
+
+        for linha in cursor.fetchall():
+            idfolha, data, mes, idfuncionario, salariobruto, inss, salarioliquido = linha
+            resultado_str = f'{idfolha}, {data}, {mes}, {idfuncionario}, {salariobruto}, {inss}, {salarioliquido}' # NÃO ESQUÇAO DO ESPAÇO AQUI.
+            resultados.append(resultado_str)
+
+        # Chama a função para criar e exibir a nova janela
+        criar_janela_exibicao_folha(resultados) # chamar a def que cria a janela de exibição
+
+    except pyodbc.Error as erro:
+        messagebox.showerror('Erro', f'Não foi possível acessar os dados no banco {erro}')
