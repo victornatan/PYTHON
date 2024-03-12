@@ -1,0 +1,20 @@
+import pyodbc
+from tkinter import messagebox
+import tkinter as tk
+from tkinter import ttk
+import re
+import os
+caminho_localedata = r'C:\Users\victo\PycharmProjects\pythonProject\venv\Lib\site-packages\babel\locale-data'
+os.environ['BABEL_DATADIR'] = caminho_localedata
+from tkcalendar import DateEntry  # Importa o widget de calendário
+from datetime import datetime
+import hashlib
+
+
+# ####################################### CONEXÃO COM O BANCO ##########################################################
+
+def conectar_banco():
+    conn_str = 'DRIVER={SQL Server};SERVER=;DATABASE=;UID=;PWD='
+    return pyodbc.connect(conn_str)
+
+# Os pacotes e a conexão com o banco SQLSERVER
