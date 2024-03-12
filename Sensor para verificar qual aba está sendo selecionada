@@ -1,0 +1,22 @@
+# ############################### SENSOR PARA CLIQUE EM ABA ############################################################
+cont_janela_login = 0
+
+
+def exibir_mensagem_aba(event):
+    global cont_janela_login
+
+    # Obtém o índice da aba atual
+    current_tab_index = notebook.index(notebook.select())
+
+    # Verifica se a aba atual é uma das abas desejadas
+    if current_tab_index in [0, 1, 2, 3]:  # Substitua 0, 1, 2 pelos índices das abas desejadas
+        if cont_janela_login == 0:
+            cont_janela_login += 1
+            criar_janela_login()
+
+
+# Adicione estas linhas para vincular a função aos eventos de clique nas abas desejadas
+notebook.bind("<ButtonRelease-1>", exibir_mensagem_aba)
+notebook.bind("<ButtonRelease-2>", exibir_mensagem_aba)
+notebook.bind("<ButtonRelease-3>", exibir_mensagem_aba)
+notebook.bind("<ButtonRelease-4>", exibir_mensagem_aba)
